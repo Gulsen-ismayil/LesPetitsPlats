@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0a1e7f6dec.js" crossorigin="anonymous"></script>
+    <title>Les petits plats</title>
+</head>
+<body>
+    <header>
+        <img src="asset/download.png" alt="logo" class="logo">
+    </header>
+
+    <main>
+        <section id="search" >
+            <input type="search" placeholder="Rechercher une recette" >
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </section>
+    
+        <section id="section-filter" >
+            <div class="filter filter1">
+                <p>Ingredients</p>
+                <i class="fa-solid fa-angle-down"></i>
+            </div>
+            <div class="filter filter2">
+                <p>Appareils</p>
+                <i class="fa-solid fa-angle-down"></i>
+            </div>
+            <div class="filter filter3">
+                <p>Ustensiles</p>
+                <i class="fa-solid fa-angle-down"></i>
+            </div>
+        </section>
+    
+        <section id="section-recipe" >
+            <div class="card">
+                <div class="image" ></div>
+                <div class="content">
+                    <div class="name-time">
+                        <p class="name"></p>
+                        <div class="time" >
+                            <i class="fa-regular fa-clock"></i>
+                            <p class="minute"></p>
+                        </div>
+                    </div>
+                    <div class="text" >
+                        <p class="detail"></p>
+                        <p class="description"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="index.js" ></script>
+</body>
+</html>
