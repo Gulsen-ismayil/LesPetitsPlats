@@ -59,10 +59,9 @@ function displayRecipes(recipes) {
 // let inputSearch = document.querySelector('input');
 
 
-function filterSearch(){
-    let filteredRecipes =[];
+function filterSearch(recipes){
     const text = document.querySelector('.input-search').value;
-    filteredRecipes = recipes.filter((recipe) => {
+   let filteredRecipes = recipes.filter((recipe) => {
         if(recipe.name.includes(text)||
            recipe.description.includes(text)||
            recipe.ingredients.some(({ingredient}) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
@@ -73,11 +72,13 @@ function filterSearch(){
     return filteredRecipes
 }
 
+const filterRecipes = filterSearch(recipes)
+
 function updateUI(recipes) {
     let filteredRecipes = filterSearch(recipes)
     displayRecipes(filteredRecipes)
   }
-
+ 
 //   section par type 
 const filterAll = document.querySelector('.filter')
 const filterIngredients = document.querySelector('.filter1');
@@ -128,7 +129,7 @@ function displayFilterType(nameOfFilterType,blocOfFilterType) {
     nameOfFilterType.forEach(name=>{
         const eachIngredientUl = document.querySelector('ul');
         const eachIngredientLi = document.createElement('li');
-        eachIngredientLi.classList.add('each-ingredientLi')
+        eachIngredientLi.classList.add('each-ingredientLi');
         eachIngredientLi.innerText = name;
 
         eachIngredientUl.appendChild(eachIngredientLi);
