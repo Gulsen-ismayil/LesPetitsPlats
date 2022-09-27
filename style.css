@@ -48,11 +48,12 @@ input {
 
 ::placeholder {
     color: rgb(185, 185, 185);
-    font-size: 16px;
+    font-size: 15px;
 }
 
 /* filter */
 
+/* filter all*/
 #section-filter {
     display: flex;
 }
@@ -67,13 +68,46 @@ input {
     font-size: 15px;
     display: flex;
     justify-content: space-around;
-}
-
-.filter i, .filter p{
-    display: flex;
     align-items: center;
 }
 
+.bloc-ingredient {
+    margin-left: 3%;
+    padding: 1%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-ingredient {
+    background-color: transparent;
+    border: none;
+}
+
+.filterAll {
+    margin-top: 60px;
+    margin-right: 20px;
+    border-radius: 4px;
+    color: yellow;
+    width: 160vw;
+    padding: 0 1%;
+}
+
+.each-ingredientLi {
+    list-style: none;
+}
+
+.card-nameIngredient {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    font-size: 14px;
+    line-height: 20px;
+    max-height: 70vh;
+    max-width: 160px;
+}
+
+/* filter individual*/
 .filter1 {
     background-color: rgba(0, 123, 255, 0.737);
 }
@@ -98,7 +132,7 @@ input {
 .card {
     margin-top: 20px;
     width: 30%;
-    height: 30vh;
+    height: 50vh;
 }
 
 .image {
@@ -153,6 +187,6 @@ input {
     background-color:aqua ;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 7;
     overflow: hidden;
 }
