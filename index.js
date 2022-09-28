@@ -58,21 +58,18 @@ function displayRecipes(recipes) {
 // let filteredRecipes =[];
 // let inputSearch = document.querySelector('input');
 
-
-function filterSearch(recipes){
+function filterSearch(recipess){
     const text = document.querySelector('.input-search').value;
-   let filteredRecipes = recipes.filter((recipe) => {
+    let filteredRecipes = recipess.filter((recipe) => {
         if(recipe.name.includes(text)||
            recipe.description.includes(text)||
            recipe.ingredients.some(({ingredient}) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-               return ingredient.includes(text)})){
-                   return true
-               }
-    })  
+                ingredient.includes(text)})){
+                     return true
+                }
+            })
     return filteredRecipes
 }
-
-const filterRecipes = filterSearch(recipes)
 
 function updateUI(recipes) {
     let filteredRecipes = filterSearch(recipes)
@@ -89,20 +86,28 @@ filterIngredients.addEventListener('click',filterType);
 filterApplications.addEventListener('click',filterType);
 filterUstensiles.addEventListener('click',filterType);
 
+
 function filterType(e) {
+    const filtered = filterSearch(recipes);
+    const nameOfIngredient = nameIngredient(filtered);
+    const nameOfAppliance = nameAppliance(filtered);
+    const nameOfUstensils = nameUstensils(filtered);
+    console.log(nameOfIngredient);
     if(e.target.className === 'filter filter1'){
         displayFilterType(nameOfIngredient,filterIngredients)
         filterIngredients.classList.replace('filter','filterAll')
         // filterApplications.style.display = 'none';
         // filterUstensiles.style.display = 'none';
         console.log('ingredient')
-    }else if(e.target.className === 'filter filter2'){
+    }
+    if(e.target.className === 'filter filter2'){
         displayFilterType(nameOfAppliance,filterApplications)
         filterApplications.classList.replace('filter','filterAll')
         // filterIngredients.style.display = 'none';
         // filterUstensiles.style.display = 'none';
         console.log('appreil');
-    }else if(e.target.className === 'filter filter3'){
+    }
+    if(e.target.className === 'filter filter3'){
         displayFilterType(nameOfUstensils,filterUstensiles)
         filterUstensiles.classList.replace('filter','filterAll')
         // filterApplications.style.display = 'none';
@@ -111,35 +116,30 @@ function filterType(e) {
     }
 }
 
-// ingredient 
-
-const nameOfIngredient = nameIngredient();
-const nameOfAppliance = nameAppliance();
-const nameOfUstensils = nameUstensils();
-
 function displayFilterType(nameOfFilterType,blocOfFilterType) {
     const code = ` 
     <div class="bloc-ingredient">
       <input type="search" class="input-ingredient" placeholder="Rechercher un ingrédient">
-      <i class="fa-solid fa-angle-up"></i>
+      <i class="fa-solid fa-angle-up angleUp"></i>
     </div>
     <ul class="card-nameIngredient"></ul>
     `
     blocOfFilterType.innerHTML = code;
     nameOfFilterType.forEach(name=>{
-        const eachIngredientUl = document.querySelector('ul');
+        const eachIngredientUl = blocOfFilterType.querySelector('ul');
         const eachIngredientLi = document.createElement('li');
         eachIngredientLi.classList.add('each-ingredientLi');
         eachIngredientLi.innerText = name;
 
         eachIngredientUl.appendChild(eachIngredientLi);
     })
-
 }
 
-function nameIngredient(){
+// ingredient 
+
+function nameIngredient(recipess){
     let arrayIngredientBeforeSet = [] 
-    recipes.forEach(recipe => {
+    recipess.forEach(recipe => {
         recipe.ingredients.forEach(ingredient => {
             arrayIngredientBeforeSet.push(ingredient.ingredient)
         })
@@ -152,9 +152,9 @@ function nameIngredient(){
 
 // appliance
 
-function nameAppliance() {
+function nameAppliance(recipess) {
     let arrayApplianceBeforeSet = []
-    recipes.forEach(recipe=> {
+    recipess.forEach(recipe=> {
         arrayApplianceBeforeSet.push(recipe.appliance)
     })
     let objectNameAppliance = new Set(arrayApplianceBeforeSet);
@@ -164,9 +164,9 @@ function nameAppliance() {
 
 // ustensiles 
 
-function nameUstensils() {
+function nameUstensils(recipess) {
     let arrayUstensilsBeforeSet = []
-    recipes.forEach(recipe=>{
+    recipess.forEach(recipe=>{
         recipe.ustensils.forEach(ustensil=>{
             arrayUstensilsBeforeSet.push(ustensil)
         })
@@ -176,6 +176,26 @@ function nameUstensils() {
     return arrayUstensilsAfterSet
 }
 
+
+// function displayFilterType(nameOfFilterType,blocOfFilterType) {
+//     const code = ` 
+//     <div class="bloc-ingredient">
+//       <input type="search" class="input-ingredient" placeholder="Rechercher un ingrédient">
+//       <i class="fa-solid fa-angle-up angleUp"></i>
+//     </div>
+//     <ul class="card-nameIngredient"></ul>
+//     `
+//     blocOfFilterType.innerHTML = code;
+//     nameOfFilterType.forEach(name=>{
+//         const eachIngredientUl = document.querySelector('ul');
+//         const eachIngredientLi = document.createElement('li');
+//         eachIngredientLi.classList.add('each-ingredientLi');
+//         eachIngredientLi.innerText = name;
+
+//         eachIngredientUl.appendChild(eachIngredientLi);
+//     })
+
+// }
 
 // function displayIngredient() {
 //     const nameOfIngredient = nameIngredient()
