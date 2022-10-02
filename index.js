@@ -2,12 +2,21 @@ const sectionRecipes = document.getElementById('section-recipe');
 const {recipes} = await getRecipes();
 updateUI(recipes);
 
+const query = {
+    appareils : 'Appareils',
+    ustensiles : 'Ustensiles',
+    ingredients : 'Ingredients'
+}
+
+// retrieve data
 async function getRecipes() {
     const data = await fetch('data/recipes.json');
     const dataRecipes = await data.json()
     return dataRecipes;
 }
 
+
+// recipes html,displayrecipes 
 function recipesFactory(data) {
     const {name,time,ingredients,description} = data
     let liste = ''
@@ -39,12 +48,6 @@ function recipesFactory(data) {
     return {recipesCardDom}
 }
 
-
-// input recherche 
-
-let inputSearch = document.querySelector('input');
-inputSearch.addEventListener('change',() =>{updateUI(recipes)})
-
 function displayRecipes(recipes) {
     sectionRecipes.innerHTML = ''
 
@@ -54,10 +57,23 @@ function displayRecipes(recipes) {
     });
 }
 
-// sectionRecipes.innerHTML = ''
-// let filteredRecipes =[];
-// let inputSearch = document.querySelector('input');
+function updateUI(recipes) {
+    let filteredRecipes = filterSearch(recipes)
+    displayRecipes(filteredRecipes)
+    const filterAll = document.querySelector('.filterAll')
+    if(filterAll){
+        hideListe(filterAll,query.ustensiles)
+        hideListe(filterAll,query.appareils)
+        hideListe(filterAll,query.ingredients)
+    }
+  }
 
+
+// input research
+let inputSearch = document.querySelector('.input-search');
+inputSearch.addEventListener('change',() =>{updateUI(recipes)})
+
+// array after filtered recipes
 function filterSearch(recipess){
     const text = document.querySelector('.input-search').value;
     let filteredRecipes = recipess.filter((recipe) => {
@@ -71,77 +87,116 @@ function filterSearch(recipess){
     return filteredRecipes
 }
 
-function updateUI(recipes) {
-    let filteredRecipes = filterSearch(recipes)
-    displayRecipes(filteredRecipes)
-  }
  
-//   section par type 
-const filterAll = document.querySelector('.filter')
+//   section type
 const filterIngredients = document.querySelector('.filter1');
 const filterApplications = document.querySelector('.filter2');
 const filterUstensiles = document.querySelector('.filter3');
 
+// selecte by type
 filterIngredients.addEventListener('click',filterType);
 filterApplications.addEventListener('click',filterType);
 filterUstensiles.addEventListener('click',filterType);
 
 
+// display by theme
 function filterType(e) {
     const filtered = filterSearch(recipes);
-    const nameOfIngredient = nameIngredient(filtered);
-    const nameOfAppliance = nameAppliance(filtered);
-    const nameOfUstensils = nameUstensils(filtered);
-    console.log(nameOfIngredient);
+    const getRecipeIngredient = getIngredient(filtered);
+    const getRecipeAppliance = getAppliance(filtered);
+    const getRecipeUstensils = getUstensils(filtered);
     if(e.target.className === 'filter filter1'){
-        displayFilterType(nameOfIngredient,filterIngredients)
-        filterIngredients.classList.replace('filter','filterAll')
-        // filterApplications.style.display = 'none';
-        // filterUstensiles.style.display = 'none';
-        console.log('ingredient')
+        displayFilterType(getRecipeIngredient,filterIngredients,query.ingredients)
+        // filterIngredients.classList.replace('filter','filterAll')
+        hideListe(filterUstensiles,query.ustensiles);
+        hideListe(filterApplications,query.appareils);
     }
     if(e.target.className === 'filter filter2'){
-        displayFilterType(nameOfAppliance,filterApplications)
-        filterApplications.classList.replace('filter','filterAll')
-        // filterIngredients.style.display = 'none';
-        // filterUstensiles.style.display = 'none';
-        console.log('appreil');
+        displayFilterType(getRecipeAppliance,filterApplications,query.appareils)
+        // filterApplications.classList.replace('filter','filterAll')
+        hideListe(filterUstensiles,query.ustensiles);
+        hideListe(filterIngredients,query.ingredients)
     }
     if(e.target.className === 'filter filter3'){
-        displayFilterType(nameOfUstensils,filterUstensiles)
-        filterUstensiles.classList.replace('filter','filterAll')
-        // filterApplications.style.display = 'none';
-        // filterIngredients.style.display ='none';
-        console.log('ustensiles');
+        displayFilterType(getRecipeUstensils,filterUstensiles,query.ustensiles)
+        // filterUstensiles.classList.replace('filter','filterAll')
+        hideListe(filterApplications,query.appareils);
+        hideListe(filterIngredients,query.ingredients);
     }
 }
 
-function displayFilterType(nameOfFilterType,blocOfFilterType) {
+// DOM for three theme
+function displayFilterType(listeByType,DOMFilterType,labelName) {
     const code = ` 
-    <div class="bloc-ingredient">
-      <input type="search" class="input-ingredient" placeholder="Rechercher un ingrédient">
+    <div class="bloc-allType">
+      <input type="search" class="input-allType" placeholder="Rechercher un ${labelName}">
       <i class="fa-solid fa-angle-up angleUp"></i>
     </div>
-    <ul class="card-nameIngredient"></ul>
+    <ul class="card-allType"></ul>
     `
-    blocOfFilterType.innerHTML = code;
-    nameOfFilterType.forEach(name=>{
-        const eachIngredientUl = blocOfFilterType.querySelector('ul');
-        const eachIngredientLi = document.createElement('li');
-        eachIngredientLi.classList.add('each-ingredientLi');
-        eachIngredientLi.innerText = name;
+    DOMFilterType.innerHTML = code;
+    DOMFilterType.classList.replace('filter','filterAll');
+    const searchType = document.querySelector('.input-allType');
+    // let text = searchType.value
+    listeByType.forEach(name=>{
+        const allBlocUl = DOMFilterType.querySelector('ul');
+        const allBlocLi = document.createElement('li');
+        allBlocLi.classList.add('allTypeLi');
+        allBlocLi.innerText = name;
+        
+        allBlocUl.appendChild(allBlocLi);
+    }) 
 
-        eachIngredientUl.appendChild(eachIngredientLi);
+    searchType.addEventListener('change',()=>{
+        const allBlocUl = DOMFilterType.querySelector('ul');
+        allBlocUl.innerHTML = ''
+        let filteredByType = listeByType.filter(name=>{
+            if(name.includes(searchType.value)){
+                return true
+            }
+        })
+        
+        filteredByType.forEach(name=>{
+            const allBlocLi = document.createElement('li');
+            allBlocLi.classList.add('allTypeLi');
+            allBlocLi.innerText =name;
+            console.log(name);
+            allBlocUl.appendChild(allBlocLi);
+        })
     })
 }
 
-// ingredient 
+// hide three bloc
+function hideListe(element,query) {
+    const blocInput = element.querySelector('.input-allType')
+    const blocAngleIcon = element.querySelector('.angleUp')
+    const blocUl = element.querySelector('ul')
+    if(blocUl||blocInput||blocAngleIcon){
+        // blocUl.style.display = 'none';
+        blocInput.style.display = 'none';
+        blocAngleIcon.style.display = 'none';
+        blocUl.innerHTML=''
+    }
+    element.classList.replace('filterAll','filter');
+    const initialBloc = document.querySelector('.filter'); //si je mes 'element' il ne trouve pas '.filter'
+    const code = `
+    <p class="textButton">${query}</p>
+    <i class="fa-solid fa-angle-down angleDown"></i>
+    `
+    initialBloc.innerHTML=code
+}
 
-function nameIngredient(recipess){
+// function filterByType() {
+//     console.log('filterbytype');
+// }
+
+
+// ingredient 
+function getIngredient(recipes){
     let arrayIngredientBeforeSet = [] 
-    recipess.forEach(recipe => {
-        recipe.ingredients.forEach(ingredient => {
-            arrayIngredientBeforeSet.push(ingredient.ingredient)
+    recipes.forEach(recipe => {
+        recipe.ingredients.forEach(ingredientElement => {
+            arrayIngredientBeforeSet.push(ingredientElement.ingredient)
         })
     })
     let objectNameIngredient = new Set(arrayIngredientBeforeSet);//creer nouveau tableau without doublont
@@ -152,7 +207,7 @@ function nameIngredient(recipess){
 
 // appliance
 
-function nameAppliance(recipess) {
+function getAppliance(recipess) {
     let arrayApplianceBeforeSet = []
     recipess.forEach(recipe=> {
         arrayApplianceBeforeSet.push(recipe.appliance)
@@ -164,7 +219,7 @@ function nameAppliance(recipess) {
 
 // ustensiles 
 
-function nameUstensils(recipess) {
+function getUstensils(recipess) {
     let arrayUstensilsBeforeSet = []
     recipess.forEach(recipe=>{
         recipe.ustensils.forEach(ustensil=>{
@@ -175,46 +230,3 @@ function nameUstensils(recipess) {
     const arrayUstensilsAfterSet = Array.from(objectNameUstensils)
     return arrayUstensilsAfterSet
 }
-
-
-// function displayFilterType(nameOfFilterType,blocOfFilterType) {
-//     const code = ` 
-//     <div class="bloc-ingredient">
-//       <input type="search" class="input-ingredient" placeholder="Rechercher un ingrédient">
-//       <i class="fa-solid fa-angle-up angleUp"></i>
-//     </div>
-//     <ul class="card-nameIngredient"></ul>
-//     `
-//     blocOfFilterType.innerHTML = code;
-//     nameOfFilterType.forEach(name=>{
-//         const eachIngredientUl = document.querySelector('ul');
-//         const eachIngredientLi = document.createElement('li');
-//         eachIngredientLi.classList.add('each-ingredientLi');
-//         eachIngredientLi.innerText = name;
-
-//         eachIngredientUl.appendChild(eachIngredientLi);
-//     })
-
-// }
-
-// function displayIngredient() {
-//     const nameOfIngredient = nameIngredient()
-//     // filterIngredients.classList.add('filter-ingredient');
-//     const code = ` 
-//     <div class="bloc-ingredient">
-//       <input type="search" class="input-ingredient" placeholder="Rechercher un ingrédient">
-//       <i class="fa-solid fa-angle-up"></i>
-//     </div>
-//     <ul class="card-nameIngredient"></ul>
-//     `
-//     filterIngredients.innerHTML = code;
-//     nameOfIngredient.forEach(name=>{ 
-//         const eachIngredientUl = document.querySelector('ul');
-//         const eachIngredientLi = document.createElement('li');
-//         eachIngredientLi.classList.add('each-ingredientLi')
-//         eachIngredientLi.innerText = name;
-
-//         eachIngredientUl.appendChild(eachIngredientLi);
-//         filterIngredients.appendChild(eachIngredientUl);
-//     }) 
-// }

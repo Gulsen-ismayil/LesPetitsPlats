@@ -71,7 +71,7 @@ input {
     align-items: center;
 }
 
-.bloc-ingredient {
+.bloc-allType {
     margin-left: 3%;
     padding: 1%;
     display: flex;
@@ -79,7 +79,7 @@ input {
     align-items: center;
 }
 
-.input-ingredient {
+.input-allType {
     background-color: transparent;
     border: none;
 }
@@ -93,11 +93,11 @@ input {
     padding: 0 1%;
 }
 
-.each-ingredientLi {
+.allTypeLi {
     list-style: none;
 }
 
-.card-nameIngredient {
+.card-allType {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -132,7 +132,7 @@ input {
 .card {
     margin-top: 20px;
     width: 30%;
-    height: 50vh;
+    height: 65vh;
 }
 
 .image {
@@ -175,6 +175,7 @@ input {
 
 .detail {
     width: 45%;
+    height: 21vh;
     background-color: pink;
     /* display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -184,9 +185,10 @@ input {
 
 .description{
     width: 45%;
+    height: 21vh;
     background-color:aqua ;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 7;
+    -webkit-line-clamp: 9;
     overflow: hidden;
 }
