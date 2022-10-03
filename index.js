@@ -15,7 +15,6 @@ async function getRecipes() {
     return dataRecipes;
 }
 
-
 // recipes html,displayrecipes 
 function recipesFactory(data) {
     const {name,time,ingredients,description} = data
@@ -68,7 +67,6 @@ function updateUI(recipes) {
     }
   }
 
-
 // input research
 let inputSearch = document.querySelector('.input-search');
 inputSearch.addEventListener('change',() =>{updateUI(recipes)})
@@ -86,7 +84,6 @@ function filterSearch(recipess){
             })
     return filteredRecipes
 }
-
  
 //   section type
 const filterIngredients = document.querySelector('.filter1');
@@ -97,7 +94,6 @@ const filterUstensiles = document.querySelector('.filter3');
 filterIngredients.addEventListener('click',filterType);
 filterApplications.addEventListener('click',filterType);
 filterUstensiles.addEventListener('click',filterType);
-
 
 // display by theme
 function filterType(e) {
@@ -136,8 +132,8 @@ function displayFilterType(listeByType,DOMFilterType,labelName) {
     `
     DOMFilterType.innerHTML = code;
     DOMFilterType.classList.replace('filter','filterAll');
-    const searchType = document.querySelector('.input-allType');
-    // let text = searchType.value
+    const searchType = DOMFilterType.querySelector('.input-allType');
+    // let text = searchType.value.   (si je declare text egale searchType.value cela ne marche pas  pour koi?)
     listeByType.forEach(name=>{
         const allBlocUl = DOMFilterType.querySelector('ul');
         const allBlocLi = document.createElement('li');
@@ -160,7 +156,6 @@ function displayFilterType(listeByType,DOMFilterType,labelName) {
             const allBlocLi = document.createElement('li');
             allBlocLi.classList.add('allTypeLi');
             allBlocLi.innerText =name;
-            console.log(name);
             allBlocUl.appendChild(allBlocLi);
         })
     })
