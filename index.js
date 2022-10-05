@@ -8,6 +8,15 @@ const query = {
     ingredients : 'Ingredients'
 }
 
+let ingredientTagList = new Set();
+let applianceTagList = new Set();
+let ustensilesTagList = new Set();
+// let ingredientArrayTagList;
+// console.log(ingredientArrayTagList);
+// let applianceArrayTagList;
+// let ustensilesArrayTagList;
+
+
 // retrieve data
 async function getRecipes() {
     const data = await fetch('data/recipes.json');
@@ -74,16 +83,49 @@ inputSearch.addEventListener('change',() =>{updateUI(recipes)})
 // array after filtered recipes
 function filterSearch(recipess){
     const text = document.querySelector('.input-search').value;
+ 
     let filteredRecipes = recipess.filter((recipe) => {
-        if(recipe.name.includes(text)||
-           recipe.description.includes(text)||
-           recipe.ingredients.some(({ingredient}) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-                ingredient.includes(text)})){
+
+    
+
+        if((recipe.name.includes(text)||recipe.description.includes(text)||recipe.ingredients.some(({ingredient}) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
+                if(ingredient.includes(text)){
                      return true
-                }
-            })
+                }}) 
+            ) 
+            
+            ){
+               return true
+           }
+    })
     return filteredRecipes
 }
+
+// const hasSelectedIngredients = Array.from(ingredientTagList).every((selectedIngredient) => {
+//     console.log(hasSelectedIngredients);
+//     return recipe.ingredients.some((ingredient)=>{
+//         if(ingredient.ingredient === selectedIngredient) {
+//             return true
+//         } else {
+//             return false
+//         }
+//     })
+// })
+
+// const hasMyRecipieAllWantedIngredient = Array.from(ingredientList).every((wantedSelectedIngredient) => {
+//     return recipie.ingredients.some((ingredient) => {
+//         if (ingrededient.ingredient ===  wantedSelectedIngredient) {
+//             return true
+//         } else {
+//             return false
+//         }
+//     })
+
+// const hasMyRecipieAllWantedUstencils= //  code à écrire
+
+
+// const hasMyRecipieAllAppliances = // code à écrire
+
  
 //   section type
 const filterIngredients = document.querySelector('.filter1');
@@ -103,29 +145,26 @@ function filterType(e) {
     const getRecipeUstensils = getUstensils(filtered);
     if(e.target.className === 'filter filter1'){
         displayFilterType(getRecipeIngredient,filterIngredients,query.ingredients)
-        // filterIngredients.classList.replace('filter','filterAll')
         hideListe(filterUstensiles,query.ustensiles);
         hideListe(filterApplications,query.appareils);
     }
     if(e.target.className === 'filter filter2'){
         displayFilterType(getRecipeAppliance,filterApplications,query.appareils)
-        // filterApplications.classList.replace('filter','filterAll')
         hideListe(filterUstensiles,query.ustensiles);
         hideListe(filterIngredients,query.ingredients)
     }
     if(e.target.className === 'filter filter3'){
         displayFilterType(getRecipeUstensils,filterUstensiles,query.ustensiles)
-        // filterUstensiles.classList.replace('filter','filterAll')
         hideListe(filterApplications,query.appareils);
         hideListe(filterIngredients,query.ingredients);
     }
 }
 
 // DOM for three theme
-function displayFilterType(listeByType,DOMFilterType,labelName) {
+function displayFilterType(listeByType,DOMFilterType,labelPlaceHolder) {
     const code = ` 
     <div class="bloc-allType">
-      <input type="search" class="input-allType" placeholder="Rechercher un ${labelName}">
+      <input type="search" class="input-allType" placeholder="Rechercher un ${labelPlaceHolder}">
       <i class="fa-solid fa-angle-up angleUp"></i>
     </div>
     <ul class="card-allType"></ul>
@@ -134,57 +173,94 @@ function displayFilterType(listeByType,DOMFilterType,labelName) {
     DOMFilterType.classList.replace('filter','filterAll');
     const searchType = DOMFilterType.querySelector('.input-allType');
     // let text = searchType.value.   (si je declare text egale searchType.value cela ne marche pas  pour koi?)
-    listeByType.forEach(name=>{
+    
+    listeByType.forEach(label=>{
         const allBlocUl = DOMFilterType.querySelector('ul');
         const allBlocLi = document.createElement('li');
         allBlocLi.classList.add('allTypeLi');
-        allBlocLi.innerText = name;
+        allBlocLi.innerText = label;
         
         allBlocUl.appendChild(allBlocLi);
-    }) 
 
+        allBlocLi.addEventListener('click',()=>{DisplaySectionTag(label,labelPlaceHolder,DOMFilterType)})
+    }) 
+    
     searchType.addEventListener('change',()=>{
         const allBlocUl = DOMFilterType.querySelector('ul');
         allBlocUl.innerHTML = ''
-        let filteredByType = listeByType.filter(name=>{
-            if(name.includes(searchType.value)){
+        let filteredByType = listeByType.filter(label=>{
+            if(label.includes(searchType.value)){
                 return true
             }
         })
         
-        filteredByType.forEach(name=>{
+        filteredByType.forEach(label=>{
             const allBlocLi = document.createElement('li');
             allBlocLi.classList.add('allTypeLi');
-            allBlocLi.innerText =name;
+            allBlocLi.innerText =label;
             allBlocUl.appendChild(allBlocLi);
         })
     })
 }
 
+
+// get filtered li liste and display it 
+function DisplaySectionTag(label,labelPlaceHolder,DOMFilterType){
+    sectionTag(label,labelPlaceHolder,DOMFilterType);
+    // console.log(sectionTag(label,labelPlaceHolder,DOMFilterType));
+    // updateUI()
+}
+
+function sectionTag(labelLi,classTag,element){
+    const tagIngredientsBloc = document.querySelector('.IngredientsDiv');
+    const tagAppareilsBloc = document.querySelector('.AppareilsDiv');
+    const tagUstensilesBloc = document.querySelector('.UstensilesDiv');
+    
+
+    let ingredientArrayTagList;
+    // console.log(ingredientArrayTagList);
+    let applianceArrayTagList;
+    let ustensilesArrayTagList;
+
+    const code = `
+    <div class="${classTag} tagDiv">
+    <p>${labelLi}</p>
+    <i class="fa-regular fa-circle-xmark closeTag"></i>
+    </div>
+    `   
+     if(ingredientTagList.has(labelLi) == false && element.className == 'filterAll filter1'){
+        ingredientArrayTagList = Array.from(ingredientTagList.add(labelLi))
+        tagIngredientsBloc.innerHTML += code ;
+        const closeTag = tagIngredientsBloc.querySelectorAll('.closeTag');
+        console.log(closeTag);
+        closeTag.forEach(close=>{
+            close.addEventListener('click',()=>{
+                tagIngredientsBloc.innerHTML = ''
+            });
+        })
+   
+    }
+    if(applianceTagList.has(labelLi) == false && element.className == 'filterAll filter2'){
+        applianceArrayTagList = Array.from(applianceTagList.add(labelLi))
+        tagAppareilsBloc.innerHTML += code ;
+        // return applianceArrayTagList
+    }
+    if(ustensilesTagList.has(labelLi) == false && element.className == 'filterAll filter3'){
+        ustensilesArrayTagList = Array.from(ustensilesTagList.add(labelLi))
+        tagUstensilesBloc.innerHTML += code ;
+        // return ustensilesArrayTagList
+    }
+}
+
 // hide three bloc
 function hideListe(element,query) {
-    const blocInput = element.querySelector('.input-allType')
-    const blocAngleIcon = element.querySelector('.angleUp')
-    const blocUl = element.querySelector('ul')
-    if(blocUl||blocInput||blocAngleIcon){
-        // blocUl.style.display = 'none';
-        blocInput.style.display = 'none';
-        blocAngleIcon.style.display = 'none';
-        blocUl.innerHTML=''
-    }
     element.classList.replace('filterAll','filter');
-    const initialBloc = document.querySelector('.filter'); //si je mes 'element' il ne trouve pas '.filter'
     const code = `
     <p class="textButton">${query}</p>
     <i class="fa-solid fa-angle-down angleDown"></i>
     `
-    initialBloc.innerHTML=code
+    element.innerHTML=code
 }
-
-// function filterByType() {
-//     console.log('filterbytype');
-// }
-
 
 // ingredient 
 function getIngredient(recipes){
