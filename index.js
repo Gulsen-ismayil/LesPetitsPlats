@@ -84,7 +84,7 @@ inputSearch.addEventListener('change',() =>{updateUI(recipes)})
 function filterSearch(recipess){
     const text = document.querySelector('.input-search').value;
  
-    let filteredRecipes = recipess.filter((recipe) => {
+    let filteredData = recipess.filter((recipe) => {
 
     
 
@@ -98,7 +98,7 @@ function filterSearch(recipess){
                return true
            }
     })
-    return filteredRecipes
+    return filteredData
 }
 
 // const hasSelectedIngredients = Array.from(ingredientTagList).every((selectedIngredient) => {
@@ -133,35 +133,36 @@ const filterApplications = document.querySelector('.filter2');
 const filterUstensiles = document.querySelector('.filter3');
 
 // selecte by type
-filterIngredients.addEventListener('click',filterType);
-filterApplications.addEventListener('click',filterType);
-filterUstensiles.addEventListener('click',filterType);
+filterIngredients.addEventListener('click',filterClick);
+filterApplications.addEventListener('click',filterClick);
+filterUstensiles.addEventListener('click',filterClick);
 
 // display by theme
-function filterType(e) {
+function filterClick(e) {
     const filtered = filterSearch(recipes);
     const getRecipeIngredient = getIngredient(filtered);
     const getRecipeAppliance = getAppliance(filtered);
     const getRecipeUstensils = getUstensils(filtered);
     if(e.target.className === 'filter filter1'){
-        displayFilterType(getRecipeIngredient,filterIngredients,query.ingredients)
+        console.log(e.target);
+        displayFilterClick(getRecipeIngredient,filterIngredients,query.ingredients)
         hideListe(filterUstensiles,query.ustensiles);
         hideListe(filterApplications,query.appareils);
     }
     if(e.target.className === 'filter filter2'){
-        displayFilterType(getRecipeAppliance,filterApplications,query.appareils)
+        displayFilterClick(getRecipeAppliance,filterApplications,query.appareils)
         hideListe(filterUstensiles,query.ustensiles);
         hideListe(filterIngredients,query.ingredients)
     }
     if(e.target.className === 'filter filter3'){
-        displayFilterType(getRecipeUstensils,filterUstensiles,query.ustensiles)
+        displayFilterClick(getRecipeUstensils,filterUstensiles,query.ustensiles)
         hideListe(filterApplications,query.appareils);
         hideListe(filterIngredients,query.ingredients);
     }
 }
 
 // DOM for three theme
-function displayFilterType(listeByType,DOMFilterType,labelPlaceHolder) {
+function displayFilterClick(listeByType,DOMFilterClick,labelPlaceHolder) {
     const code = ` 
     <div class="bloc-allType">
       <input type="search" class="input-allType" placeholder="Rechercher un ${labelPlaceHolder}">
@@ -169,24 +170,24 @@ function displayFilterType(listeByType,DOMFilterType,labelPlaceHolder) {
     </div>
     <ul class="card-allType"></ul>
     `
-    DOMFilterType.innerHTML = code;
-    DOMFilterType.classList.replace('filter','filterAll');
-    const searchType = DOMFilterType.querySelector('.input-allType');
+    DOMFilterClick.innerHTML = code;
+    DOMFilterClick.classList.replace('filter','filterAll');
+    const searchType = DOMFilterClick.querySelector('.input-allType');
     // let text = searchType.value.   (si je declare text egale searchType.value cela ne marche pas  pour koi?)
     
     listeByType.forEach(label=>{
-        const allBlocUl = DOMFilterType.querySelector('ul');
+        const allBlocUl = DOMFilterClick.querySelector('ul');
         const allBlocLi = document.createElement('li');
         allBlocLi.classList.add('allTypeLi');
         allBlocLi.innerText = label;
         
         allBlocUl.appendChild(allBlocLi);
 
-        allBlocLi.addEventListener('click',()=>{DisplaySectionTag(label,labelPlaceHolder,DOMFilterType)})
+        allBlocLi.addEventListener('click',()=>{DisplaySectionTag(label,labelPlaceHolder,DOMFilterClick)})
     }) 
     
     searchType.addEventListener('change',()=>{
-        const allBlocUl = DOMFilterType.querySelector('ul');
+        const allBlocUl = DOMFilterClick.querySelector('ul');
         allBlocUl.innerHTML = ''
         let filteredByType = listeByType.filter(label=>{
             if(label.includes(searchType.value)){
@@ -205,9 +206,9 @@ function displayFilterType(listeByType,DOMFilterType,labelPlaceHolder) {
 
 
 // get filtered li liste and display it 
-function DisplaySectionTag(label,labelPlaceHolder,DOMFilterType){
-    sectionTag(label,labelPlaceHolder,DOMFilterType);
-    // console.log(sectionTag(label,labelPlaceHolder,DOMFilterType));
+function DisplaySectionTag(label,labelPlaceHolder,DOMFilterClick){
+    sectionTag(label,labelPlaceHolder,DOMFilterClick);
+    // console.log(sectionTag(label,labelPlaceHolder,DOMFilterClick));
     // updateUI()
 }
 
