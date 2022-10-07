@@ -12,6 +12,11 @@ let ingredientTagList = new Set();
 let applianceTagList = new Set();
 let ustensilesTagList = new Set();
 
+let ingredientArrayTagList ;
+let applianceArrayTagList;
+let ustensilesArrayTagList ;
+
+
 // retrieve data
 async function getRecipes() {
     const data = await fetch('data/recipes.json');
@@ -70,60 +75,15 @@ function updateUI(recipes) {
     }
 }
 
-// input research
+// global search baar
 let inputSearch = document.querySelector('.input-search');
 inputSearch.addEventListener('change', () => { updateUI(recipes) })
 
-// array after filtered recipes
-function filterSearch(recipess) {
-    const text = document.querySelector('.input-search').value;
-
-    let filteredData = recipess.filter((recipe) => {
-        if ((recipe.name.includes(text) || recipe.description.includes(text) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-            if (ingredient.includes(text)) {
-                return true
-            }
-        })
-        )
-        ) {
-            return true
-        }
-    })
-    return filteredData
-}
-
-// const hasSelectedIngredients = Array.from(ingredientTagList).every((selectedIngredient) => {
-//     console.log(hasSelectedIngredients);
-//     return recipe.ingredients.some((ingredient)=>{
-//         if(ingredient.ingredient === selectedIngredient) {
-//             return true
-//         } else {
-//             return false
-//         }
-//     })
-// })
-
-// const hasMyRecipieAllWantedIngredient = Array.from(ingredientList).every((wantedSelectedIngredient) => {
-//     return recipie.ingredients.some((ingredient) => {
-//         if (ingrededient.ingredient ===  wantedSelectedIngredient) {
-//             return true
-//         } else {
-//             return false
-//         }
-//     })
-
-// const hasMyRecipieAllWantedUstencils= //  code à écrire
-
-
-// const hasMyRecipieAllAppliances = // code à écrire
-
-
-//   section type
+//   section filter by type
 const filterIngredients = document.querySelector('.filter1');
 const filterApplications = document.querySelector('.filter2');
 const filterUstensiles = document.querySelector('.filter3');
 
-// selecte by type
 filterIngredients.addEventListener('click', filterClick);
 filterApplications.addEventListener('click', filterClick);
 filterUstensiles.addEventListener('click', filterClick);
@@ -172,7 +132,7 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
         allBlocLi.innerText = label;
         allBlocUl.appendChild(allBlocLi);
 
-        allBlocLi.addEventListener('click', () => { DisplaySectionTag(label, labelPlaceHolder, DOMFilterClick) })
+        allBlocLi.addEventListener('click', () => { sectionTag(label, labelPlaceHolder, DOMFilterClick)})
     })
 
     searchType.addEventListener('change', () => {
@@ -194,10 +154,7 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
 }
 
 
-// get filtered li liste and display it 
-function DisplaySectionTag(label, labelPlaceHolder, DOMFilterClick) {
-    sectionTag(label, labelPlaceHolder, DOMFilterClick);
-}
+// section Tag
 
 function sectionTag(labelLi, classTag, blocName) {
     const tagIngredientsBloc = document.querySelector('.IngredientsDiv');
@@ -211,7 +168,7 @@ function sectionTag(labelLi, classTag, blocName) {
     </div>
     `
     if (ingredientTagList.has(labelLi) == false && blocName.className == 'filterAll filter1') {
-        ingredientTagList.add(labelLi);
+        ingredientTagList.add(labelLi) ;
         tagIngredientsBloc.innerHTML += code;
     }
     if (applianceTagList.has(labelLi) == false && blocName.className == 'filterAll filter2') {
@@ -231,7 +188,62 @@ function sectionTag(labelLi, classTag, blocName) {
                 console.log('g');
             });
     }
+
+    ingredientArrayTagList = Array.from(ingredientTagList);
+    applianceArrayTagList = Array.from(applianceTagList);
+    ustensilesArrayTagList = Array.from(ustensilesTagList);
+    return {ingredientArrayTagList,applianceArrayTagList,ustensilesArrayTagList}
 }
+
+// global filtered function 
+function filterSearch(recipess) {
+    const text = document.querySelector('.input-search').value;
+    let filteredData = recipess.filter((recipe) => {
+        if ((recipe.name.includes(text) || recipe.description.includes(text) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
+            if (ingredient.includes(text)) {
+                return true
+            }
+        })
+        )
+        ) {
+            return true
+        }
+    })
+    return filteredData
+}
+
+
+
+
+
+
+
+// const hasSelectedIngredients = Array.from(ingredientTagList).every((selectedIngredient) => {
+//     console.log(hasSelectedIngredients);
+//     return recipe.ingredients.some((ingredient)=>{
+//         if(ingredient.ingredient === selectedIngredient) {
+//             return true
+//         } else {
+//             return false
+//         }
+//     })
+// })
+
+// const hasMyRecipieAllWantedIngredient = Array.from(ingredientList).every((wantedSelectedIngredient) => {
+//     return recipie.ingredients.some((ingredient) => {
+//         if (ingrededient.ingredient ===  wantedSelectedIngredient) {
+//             return true
+//         } else {
+//             return false
+//         }
+//     })
+
+// const hasMyRecipieAllWantedUstencils= //  code à écrire
+
+
+// const hasMyRecipieAllAppliances = // code à écrire
+
+
 
 // hide three bloc
 function hideListe(element, query) {
