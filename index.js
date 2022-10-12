@@ -1,6 +1,6 @@
 const sectionRecipes = document.getElementById('section-recipe');
 const { recipes } = await getRecipes();
-updateUI(recipes);
+
 
 const query = {
     appareils: 'Appareils',
@@ -12,11 +12,11 @@ let ingredientTagList = new Set();
 let applianceTagList = new Set();
 let ustensilesTagList = new Set();
 
-let ingredientArrayTagList ;
-let applianceArrayTagList;
-let ustensilesArrayTagList ;
+var ingredientArrayTagList = [] ;
+var applianceArrayTagList = [];
+var ustensilesArrayTagList = [] ;
 
-
+updateUI(recipes);
 // retrieve data
 async function getRecipes() {
     const data = await fetch('data/recipes.json');
@@ -73,6 +73,7 @@ function updateUI(recipes) {
         hideListe(filterAll, query.appareils)
         hideListe(filterAll, query.ingredients)
     }
+    return filteredRecipes
 }
 
 // global search baar
@@ -90,7 +91,7 @@ filterUstensiles.addEventListener('click', filterClick);
 
 // display by theme
 function filterClick(e) {
-    const filtered = filterSearch(recipes);
+    const filtered = updateUI(recipes);
     const getRecipeIngredient = getIngredient(filtered);
     const getRecipeAppliance = getAppliance(filtered);
     const getRecipeUstensils = getUstensils(filtered);
@@ -179,70 +180,68 @@ function sectionTag(labelLi, classTag, blocName) {
         ustensilesTagList.add(labelLi)
         tagUstensilesBloc.innerHTML += code;
     }
-
-    const elementDiv = document.querySelector(`.${classTag}`)
-    const closeTag = document.querySelectorAll('.closeTag');
+    console.log(ingredientTagList);
+    
+    const closeTag = document.querySelectorAll('.closeTag');   
     for (let i = 0; i < closeTag.length; i++) {
-        closeTag[i].addEventListener('click', () => { //pour quoi je peux supprimer seulement le premier element?
-                elementDiv.style.display = 'none'
-                console.log('g');
-            });
+        let textTag
+        closeTag[i].addEventListener('click', (e) => { 
+            textTag = e.target.closest('.tagDiv').innerText;
+            e.target.closest('.tagDiv').style.display = 'none';
+            if(ingredientTagList.has(textTag)){
+                ingredientTagList.delete(textTag)
+                ingredientArrayTagList = Array.from(ingredientTagList);               
+                updateUI(recipes)
+            }  
+        });
     }
-
     ingredientArrayTagList = Array.from(ingredientTagList);
     applianceArrayTagList = Array.from(applianceTagList);
     ustensilesArrayTagList = Array.from(ustensilesTagList);
-    return {ingredientArrayTagList,applianceArrayTagList,ustensilesArrayTagList}
+    
 }
 
 // global filtered function 
 function filterSearch(recipess) {
     const text = document.querySelector('.input-search').value;
     let filteredData = recipess.filter((recipe) => {
+        const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
+            return recipe.ingredients.some((ingredient) =>{
+                if(ingredient.ingredient === selectedIngredient) {
+                    return true 
+                } else {
+                    return false
+                }
+            })
+        })
+        const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
+            if(recipe.appliance === selectedAppliance){
+                return true
+            } else {
+                return false
+            }
+        })
+        const hasSelectedUstensiles = ustensilesArrayTagList.every( selectedUstensiles => {
+            return recipe.ustensils.some((ustensil) => {
+                if(ustensil === selectedUstensiles){
+                    return true
+                } else {
+                    return false
+                }
+            })
+        })
         if ((recipe.name.includes(text) || recipe.description.includes(text) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
             if (ingredient.includes(text)) {
                 return true
             }
         })
-        )
+        ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensiles
         ) {
             return true
         }
     })
     return filteredData
 }
-
-
-
-
-
-
-
-// const hasSelectedIngredients = Array.from(ingredientTagList).every((selectedIngredient) => {
-//     console.log(hasSelectedIngredients);
-//     return recipe.ingredients.some((ingredient)=>{
-//         if(ingredient.ingredient === selectedIngredient) {
-//             return true
-//         } else {
-//             return false
-//         }
-//     })
-// })
-
-// const hasMyRecipieAllWantedIngredient = Array.from(ingredientList).every((wantedSelectedIngredient) => {
-//     return recipie.ingredients.some((ingredient) => {
-//         if (ingrededient.ingredient ===  wantedSelectedIngredient) {
-//             return true
-//         } else {
-//             return false
-//         }
-//     })
-
-// const hasMyRecipieAllWantedUstencils= //  code à écrire
-
-
-// const hasMyRecipieAllAppliances = // code à écrire
-
 
 
 // hide three bloc
