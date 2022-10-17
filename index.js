@@ -67,12 +67,12 @@ function displayRecipes(recipes) {
 function updateUI(recipes) {
     let filteredRecipes = filterSearch(recipes)
     displayRecipes(filteredRecipes)
-    const filterAll = document.querySelector('.filterAll')
-    if (filterAll) {
-        hideListe(filterAll, query.ustensiles)
-        hideListe(filterAll, query.appareils)
-        hideListe(filterAll, query.ingredients)
-    }
+    // const filterAll = document.querySelector('.filterAll')
+    // if (filterAll) {
+    //     hideListe(filterAll, query.ustensiles)
+    //     hideListe(filterAll, query.appareils)
+    //     hideListe(filterAll, query.ingredients)
+    // }
     return filteredRecipes
 }
 
@@ -103,7 +103,7 @@ function filterClick(e) {
     if (e.target.className === 'filter filter2') {
         displayFilterClick(getRecipeAppliance, filterApplications, query.appareils)
         hideListe(filterUstensiles, query.ustensiles);
-        hideListe(filterIngredients, query.ingredients)
+        hideListe(filterIngredients, query.ingredients);
     }
     if (e.target.className === 'filter filter3') {
         displayFilterClick(getRecipeUstensils, filterUstensiles, query.ustensiles)
@@ -126,16 +126,6 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
     const searchType = DOMFilterClick.querySelector('.input-allType');
     // let text = searchType.value.   (si je declare text egale searchType.value cela ne marche pas  pour koi?)
 
-    listeByType.forEach(label => {
-        const allBlocUl = DOMFilterClick.querySelector('ul');
-        const allBlocLi = document.createElement('li');
-        allBlocLi.classList.add('allTypeLi');
-        allBlocLi.innerText = label;
-        allBlocUl.appendChild(allBlocLi);
-
-        allBlocLi.addEventListener('click', () => { sectionTag(label, labelPlaceHolder, DOMFilterClick)})
-    })
-
     searchType.addEventListener('change', () => {
         const allBlocUl = DOMFilterClick.querySelector('ul');
         allBlocUl.innerHTML = ''
@@ -152,6 +142,16 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
             allBlocUl.appendChild(allBlocLi);
         })
     })
+
+    listeByType.forEach(label => {
+        const allBlocUl = DOMFilterClick.querySelector('ul');
+        const allBlocLi = document.createElement('li');
+        allBlocLi.classList.add('allTypeLi');
+        allBlocLi.innerText = label;
+        allBlocUl.appendChild(allBlocLi);
+
+        allBlocLi.addEventListener('click', () => { sectionTag(label, labelPlaceHolder, DOMFilterClick)})
+    })
 }
 
 
@@ -159,8 +159,11 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
 
 function sectionTag(labelLi, classTag, blocName) {
     const tagIngredientsBloc = document.querySelector('.IngredientsDiv');
+    const textTagIngredientsBloc = tagIngredientsBloc.innerText;
     const tagAppareilsBloc = document.querySelector('.AppareilsDiv');
+    const textTagAppareilsBloc = tagAppareilsBloc.innerText;
     const tagUstensilesBloc = document.querySelector('.UstensilesDiv');
+    const textTagUstensilesBloc = tagUstensilesBloc.innerText;
 
     const code = `
     <div class="${classTag} tagDiv">
@@ -168,19 +171,18 @@ function sectionTag(labelLi, classTag, blocName) {
     <i class="fa-regular fa-circle-xmark closeTag"></i>
     </div>
     `
-    if (ingredientTagList.has(labelLi) == false && blocName.className == 'filterAll filter1') {
+    if (textTagIngredientsBloc.includes(labelLi) == false && blocName.className == 'filterAll filter1') {
         ingredientTagList.add(labelLi) ;
         tagIngredientsBloc.innerHTML += code;
     }
-    if (applianceTagList.has(labelLi) == false && blocName.className == 'filterAll filter2') {
+    if (textTagAppareilsBloc.includes(labelLi) == false && blocName.className == 'filterAll filter2') {
         applianceTagList.add(labelLi)
         tagAppareilsBloc.innerHTML += code;
     }
-    if (ustensilesTagList.has(labelLi) == false && blocName.className == 'filterAll filter3') {
+    if (textTagUstensilesBloc.includes(labelLi) == false && blocName.className == 'filterAll filter3') {
         ustensilesTagList.add(labelLi)
         tagUstensilesBloc.innerHTML += code;
     }
-    console.log(ingredientTagList);
     
     const closeTag = document.querySelectorAll('.closeTag');   
     for (let i = 0; i < closeTag.length; i++) {
@@ -189,10 +191,20 @@ function sectionTag(labelLi, classTag, blocName) {
             textTag = e.target.closest('.tagDiv').innerText;
             e.target.closest('.tagDiv').style.display = 'none';
             if(ingredientTagList.has(textTag)){
-                ingredientTagList.delete(textTag)
+                ingredientTagList.delete(textTag);
                 ingredientArrayTagList = Array.from(ingredientTagList);               
-                updateUI(recipes)
-            }  
+                updateUI(recipes);
+            }
+            if(applianceTagList.has(textTag)){
+                applianceTagList.delete(textTag);
+                applianceArrayTagList = Array.from(applianceTagList);
+                updateUI(recipes);
+            }
+            if(ustensilesTagList.has(textTag)){
+                ustensilesTagList.delete(textTag);
+                ustensilesArrayTagList = Array.from(ustensilesTagList);
+                updateUI(recipes);
+            }
         });
     }
     ingredientArrayTagList = Array.from(ingredientTagList);
@@ -237,6 +249,7 @@ function filterSearch(recipess) {
         })
         ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensiles
         ) {
+            // console.log(hasSelectedAppliance);
             return true
         }
     })
