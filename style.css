@@ -26,7 +26,7 @@ header {
 
 #search {
     background-color: rgb(241, 239, 239);
-    height: 5vh;
+    height: 7vh;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -60,8 +60,8 @@ input {
 
 .filter {
     width: fit-content;
-    padding: 0 5px;
-    height: 5vh;
+    padding: 0 25px;
+    height: 7vh;
     border-radius: 4px;
     margin-right: 20px;
     color: white;
@@ -72,7 +72,7 @@ input {
 }
 
 .angleDown {
-    padding-left: 5px;
+    padding-left: 20px;
 }
 
 .bloc-allType {
@@ -91,13 +91,14 @@ input {
 .filterAll {
     margin-right: 20px;
     border-radius: 4px;
-    color: yellow;
+    color: white;
     width: 160vw;
     padding: 0 1%;
 }
 
 .allTypeLi {
     list-style: none;
+    margin-right: 60px;
 }
 
 .card-allType {
@@ -105,9 +106,10 @@ input {
     flex-direction: column;
     flex-wrap: wrap;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 25px;
     max-height: 70vh;
-    max-width: 160px;
+    overflow-x: scroll;
+    /* max-width: 160px; */
 }
 
 /* filter individual and tag */
@@ -164,19 +166,19 @@ input {
 
 .card {
     margin-top: 20px;
-    width: 30%;
+    width: 400px;
     height: 65vh;
 }
 
 .image {
     background-color: rgb(207, 193, 193);
-    height: 50%;
+    height: 40%;
     border-radius: 5px 5px 0 0;
 }
 
 .content {
     background-color: rgb(241, 239, 239);
-    height: 40%;
+    height: 30%;
     border-radius: 0 0 5px 5px;
     display: flex;
     flex-direction: column;
@@ -190,14 +192,13 @@ input {
 
 .name {
     width: 65%;
-    background-color: pink;
     word-break: break-all;
 }
 
 .time {
-    width: 30%;
-    background-color:aqua ;
-    word-break: break-all;
+    width: 20%;
+    font-weight: bold;
+    /* word-break: break-all; */
 }
 
 .text {
@@ -208,8 +209,7 @@ input {
 
 .detail {
     width: 45%;
-    height: 21vh;
-    background-color: pink;
+    font-size: 12px;
     /* display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
@@ -218,10 +218,10 @@ input {
 
 .description{
     width: 45%;
-    height: 21vh;
-    background-color:aqua ;
+    font-size: 12px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 9;
+    -webkit-line-clamp: 6;
     overflow: hidden;
+    /* text-overflow: ellipsis; */
 }

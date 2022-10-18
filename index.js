@@ -12,9 +12,9 @@ let ingredientTagList = new Set();
 let applianceTagList = new Set();
 let ustensilesTagList = new Set();
 
-var ingredientArrayTagList = [] ;
+var ingredientArrayTagList = [];
 var applianceArrayTagList = [];
-var ustensilesArrayTagList = [] ;
+var ustensilesArrayTagList = [];
 
 updateUI(recipes);
 // retrieve data
@@ -150,7 +150,7 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
         allBlocLi.innerText = label;
         allBlocUl.appendChild(allBlocLi);
 
-        allBlocLi.addEventListener('click', () => { sectionTag(label, labelPlaceHolder, DOMFilterClick)})
+        allBlocLi.addEventListener('click', () => { sectionTag(label, labelPlaceHolder, DOMFilterClick) })
     })
 }
 
@@ -172,7 +172,7 @@ function sectionTag(labelLi, classTag, blocName) {
     </div>
     `
     if (textTagIngredientsBloc.includes(labelLi) == false && blocName.className == 'filterAll filter1') {
-        ingredientTagList.add(labelLi) ;
+        ingredientTagList.add(labelLi);
         tagIngredientsBloc.innerHTML += code;
     }
     if (textTagAppareilsBloc.includes(labelLi) == false && blocName.className == 'filterAll filter2') {
@@ -183,24 +183,24 @@ function sectionTag(labelLi, classTag, blocName) {
         ustensilesTagList.add(labelLi)
         tagUstensilesBloc.innerHTML += code;
     }
-    
-    const closeTag = document.querySelectorAll('.closeTag');   
+
+    const closeTag = document.querySelectorAll('.closeTag');
     for (let i = 0; i < closeTag.length; i++) {
         let textTag
-        closeTag[i].addEventListener('click', (e) => { 
+        closeTag[i].addEventListener('click', (e) => {
             textTag = e.target.closest('.tagDiv').innerText;
             e.target.closest('.tagDiv').style.display = 'none';
-            if(ingredientTagList.has(textTag)){
+            if (ingredientTagList.has(textTag)) {
                 ingredientTagList.delete(textTag);
-                ingredientArrayTagList = Array.from(ingredientTagList);               
+                ingredientArrayTagList = Array.from(ingredientTagList);
                 updateUI(recipes);
             }
-            if(applianceTagList.has(textTag)){
+            if (applianceTagList.has(textTag)) {
                 applianceTagList.delete(textTag);
                 applianceArrayTagList = Array.from(applianceTagList);
                 updateUI(recipes);
             }
-            if(ustensilesTagList.has(textTag)){
+            if (ustensilesTagList.has(textTag)) {
                 ustensilesTagList.delete(textTag);
                 ustensilesArrayTagList = Array.from(ustensilesTagList);
                 updateUI(recipes);
@@ -210,32 +210,34 @@ function sectionTag(labelLi, classTag, blocName) {
     ingredientArrayTagList = Array.from(ingredientTagList);
     applianceArrayTagList = Array.from(applianceTagList);
     ustensilesArrayTagList = Array.from(ustensilesTagList);
-    
+
 }
 
 // global filtered function 
 function filterSearch(recipess) {
     const text = document.querySelector('.input-search').value;
+    searchText(text)
+    console.log(searchText(text));
     let filteredData = recipess.filter((recipe) => {
         const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
-            return recipe.ingredients.some((ingredient) =>{
-                if(ingredient.ingredient === selectedIngredient) {
-                    return true 
+            return recipe.ingredients.some((ingredient) => {
+                if (ingredient.ingredient === selectedIngredient) {
+                    return true
                 } else {
                     return false
                 }
             })
         })
         const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
-            if(recipe.appliance === selectedAppliance){
+            if (recipe.appliance === selectedAppliance) {
                 return true
             } else {
                 return false
             }
         })
-        const hasSelectedUstensiles = ustensilesArrayTagList.every( selectedUstensiles => {
+        const hasSelectedUstensiles = ustensilesArrayTagList.every(selectedUstensiles => {
             return recipe.ustensils.some((ustensil) => {
-                if(ustensil === selectedUstensiles){
+                if (ustensil === selectedUstensiles) {
                     return true
                 } else {
                     return false
@@ -247,12 +249,13 @@ function filterSearch(recipess) {
                 return true
             }
         })
-        ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensiles
+        )
+            && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensiles
         ) {
-            // console.log(hasSelectedAppliance);
             return true
         }
     })
+   
     return filteredData
 }
 
@@ -302,4 +305,14 @@ function getUstensils(recipess) {
     let objectNameUstensils = new Set(arrayUstensilsBeforeSet)
     const arrayUstensilsAfterSet = Array.from(objectNameUstensils)
     return arrayUstensilsAfterSet
+}
+
+// function 
+function searchText(words) {
+    const text = new Text(words)
+    if (text.length >= 3) {
+        return true
+    } else {
+        return false
+    }
 }
