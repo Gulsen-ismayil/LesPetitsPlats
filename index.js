@@ -67,18 +67,28 @@ function displayRecipes(recipes) {
 function updateUI(recipes) {
     let filteredRecipes = filterSearch(recipes)
     displayRecipes(filteredRecipes)
-    // const filterAll = document.querySelector('.filterAll')
-    // if (filterAll) {
-    //     hideListe(filterAll, query.ustensiles)
-    //     hideListe(filterAll, query.appareils)
-    //     hideListe(filterAll, query.ingredients)
-    // }
+
+    if(filteredRecipes.length === 0){    //for display the text "any recipes available"
+        anyRecipes()
+        }
+
+    const filterAll = document.querySelector('.filterAll');
+    if (filterAll !== null && filterAll.className === 'filterAll filter1') {
+        hideListe(filterAll, query.ingredients)
+    }
+    if (filterAll !== null && filterAll.className === 'filterAll filter2') {
+        hideListe(filterAll, query.appareils)
+    }
+    if (filterAll !== null && filterAll.className === 'filterAll filter3') {
+        hideListe(filterAll, query.ustensiles)
+    }
     return filteredRecipes
 }
 
 // global search baar
 let inputSearch = document.querySelector('.input-search');
-inputSearch.addEventListener('change', () => { updateUI(recipes) })
+inputSearch.addEventListener('change', (e)=> { if(e.target.value.length>2){ updateUI(recipes)}})
+
 
 //   section filter by type
 const filterIngredients = document.querySelector('.filter1');
@@ -91,21 +101,24 @@ filterUstensiles.addEventListener('click', filterClick);
 
 // display by theme
 function filterClick(e) {
+    if (e.target.tagName == 'INPUT') {
+        return
+    }
     const filtered = updateUI(recipes);
     const getRecipeIngredient = getIngredient(filtered);
     const getRecipeAppliance = getAppliance(filtered);
     const getRecipeUstensils = getUstensils(filtered);
-    if (e.target.className === 'filter filter1') {
+    if (e.target.innerText === 'Ingredients') {
         displayFilterClick(getRecipeIngredient, filterIngredients, query.ingredients)
         hideListe(filterUstensiles, query.ustensiles);
         hideListe(filterApplications, query.appareils);
     }
-    if (e.target.className === 'filter filter2') {
+    if (e.target.innerText === 'Appareils') {
         displayFilterClick(getRecipeAppliance, filterApplications, query.appareils)
         hideListe(filterUstensiles, query.ustensiles);
         hideListe(filterIngredients, query.ingredients);
     }
-    if (e.target.className === 'filter filter3') {
+    if (e.target.innerText === 'Ustensiles') {
         displayFilterClick(getRecipeUstensils, filterUstensiles, query.ustensiles)
         hideListe(filterApplications, query.appareils);
         hideListe(filterIngredients, query.ingredients);
@@ -124,8 +137,6 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
     DOMFilterClick.innerHTML = code;
     DOMFilterClick.classList.replace('filter', 'filterAll');
     const searchType = DOMFilterClick.querySelector('.input-allType');
-    // let text = searchType.value.   (si je declare text egale searchType.value cela ne marche pas  pour koi?)
-
     searchType.addEventListener('change', () => {
         const allBlocUl = DOMFilterClick.querySelector('ul');
         allBlocUl.innerHTML = ''
@@ -215,9 +226,7 @@ function sectionTag(labelLi, classTag, blocName) {
 
 // global filtered function 
 function filterSearch(recipess) {
-    const text = document.querySelector('.input-search').value;
-    searchText(text)
-    console.log(searchText(text));
+    let text = document.querySelector('.input-search').value;
     let filteredData = recipess.filter((recipe) => {
         const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
             return recipe.ingredients.some((ingredient) => {
@@ -244,6 +253,7 @@ function filterSearch(recipess) {
                 }
             })
         })
+
         if ((recipe.name.includes(text) || recipe.description.includes(text) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
             if (ingredient.includes(text)) {
                 return true
@@ -255,7 +265,7 @@ function filterSearch(recipess) {
             return true
         }
     })
-   
+
     return filteredData
 }
 
@@ -264,7 +274,7 @@ function filterSearch(recipess) {
 function hideListe(element, query) {
     element.classList.replace('filterAll', 'filter');
     const code = `
-    <p class="textButton">${query}</p>
+    <p>${query}</p>
     <i class="fa-solid fa-angle-down angleDown"></i>
     `
     element.innerHTML = code
@@ -308,11 +318,11 @@ function getUstensils(recipess) {
 }
 
 // function 
-function searchText(words) {
-    const text = new Text(words)
-    if (text.length >= 3) {
-        return true
-    } else {
-        return false
-    }
+function anyRecipes() {
+    const code = `
+    <p class="anyrecipes">Aucune recette ne correspond à votre critère...</p>
+    `
+    const divAnyRecipes = document.querySelector('.divAnyRecipes');
+    divAnyRecipes.innerHTML=code; 
 }
+

@@ -51,6 +51,14 @@ input {
     font-size: 15px;
 }
 
+/* any recipes available*/
+
+.anyrecipes {
+    margin-top: 5px;
+    font-size: 14px;
+    color:grey;
+}
+
 /* filter */
 
 /* filter all*/
