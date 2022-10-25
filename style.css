@@ -225,7 +225,7 @@ input {
 }
 
 .detail {
-    width: 45%;
+    width: 50%;
     font-size: 12px;
     /* display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -238,7 +238,7 @@ input {
     font-size: 12px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
+    -webkit-line-clamp: 7;
     overflow: hidden;
     /* text-overflow: ellipsis; */
 }
