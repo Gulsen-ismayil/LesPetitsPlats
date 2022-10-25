@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,42 +10,44 @@
     <script src="https://kit.fontawesome.com/0a1e7f6dec.js" crossorigin="anonymous"></script>
     <title>Les petits plats</title>
 </head>
+
 <body>
     <header>
         <img src="asset/download.png" alt="logo" class="logo">
     </header>
 
     <main>
-        <section id="search" >
+        <section id="search">
             <input class="input-search" type="search" placeholder="Rechercher une recette">
             <i class="fa-solid fa-magnifying-glass"></i>
         </section>
-        <div class="divAnyRecipes"></div>
-    
+        <div class="divMessageError"></div>
+
         <section class="tag">
             <div class="IngredientsDiv"></div>
-            <div class="AppareilsDiv"></div>
-            <div class="UstensilesDiv"></div>
+            <div class="AppliancesDiv"></div>
+            <div class="UstensilsDiv"></div>
         </section>
 
-        <section id="section-filter" >
-            <div class="filter filter1">
+        <section id="section-filter">
+            <div class="filter filterClassIngredients">
                 <p>Ingredients</p>
                 <i class="fa-solid fa-angle-down angleDown"></i>
             </div>
-            <div class="filter filter2">
+            <div class="filter filterClassAppliances">
                 <p>Appareils</p>
                 <i class="fa-solid fa-angle-down angleDown"></i>
             </div>
-            <div class="filter filter3">
+            <div class="filter filterClassUstensils">
                 <p>Ustensiles</p>
                 <i class="fa-solid fa-angle-down angleDown"></i>
             </div>
         </section>
-    
-        <section id="section-recipe" >
+
+        <section id="section-recipe">
         </section>
     </main>
-    <script type="module" src="index.js" ></script>
+    <script type="module" src="index.js"></script>
 </body>
+
 </html>

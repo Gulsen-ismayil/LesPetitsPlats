@@ -1,24 +1,23 @@
 const sectionRecipes = document.getElementById('section-recipe');
-const { recipes } = await getRecipes();
+const { recipes } = await getDataRecipes();
 
 
 const query = {
-    appareils: 'Appareils',
-    ustensiles: 'Ustensiles',
+    appliances: 'Appareils',
+    ustensils: 'Ustensiles',
     ingredients: 'Ingredients'
 }
 
 let ingredientTagList = new Set();
 let applianceTagList = new Set();
-let ustensilesTagList = new Set();
+let ustensilsTagList = new Set();
 
 var ingredientArrayTagList = [];
 var applianceArrayTagList = [];
-var ustensilesArrayTagList = [];
+var ustensilsArrayTagList = [];
 
-updateUI(recipes);
 // retrieve data
-async function getRecipes() {
+async function getDataRecipes() {
     const data = await fetch('data/recipes.json');
     const dataRecipes = await data.json()
     return dataRecipes;
@@ -29,26 +28,26 @@ function recipesFactory(data) {
     const { name, time, ingredients, description } = data
     let liste = ''
     for (let i = 0; i < ingredients.length; i++) {
-        liste = liste + `${ingredients[i].ingredient}:${ingredients[i].quantity}${ingredients[i].unit || ''} <br>`
+        liste = liste + `${ingredients[i].ingredient}: ${ingredients[i].quantity || ''}${ingredients[i].unit || ''} <br>`
     }
 
     function recipesCardDom() {
         let code = `
         <div class="card">
-        <div class="image" ></div>
-        <div class="content">
-        <div class="name-time">
-        <p class="name">${name}</p>
-        <div class="time" >
-        <i class="fa-regular fa-clock"></i>
-        <p class="minute">${time}min</p>
-        </div>
-        </div>
-        <div class="text" >
-        <p class="detail">${liste}</p>
-        <p class="description">${description}</p>
-        </div>
-        </div>
+            <div class="image" ></div>
+            <div class="content">
+                <div class="name-time">
+                    <p class="name">${name}</p>
+                    <div class="time" >
+                         <i class="fa-regular fa-clock"></i>
+                         <p class="minute">${time}min</p>
+                    </div>
+                </div>
+                <div class="text" >
+                    <p class="detail">${liste}</p>
+                    <p class="description">${description}</p>
+                </div>
+            </div>
         </div>
         `
         sectionRecipes.innerHTML += code;
@@ -64,63 +63,71 @@ function displayRecipes(recipes) {
     });
 }
 
-function updateUI(recipes) {
-    let filteredRecipes = filterSearch(recipes)
+// global search baar
+let inputSearch = document.querySelector('.input-search');
+inputSearch.addEventListener('change', () => { refreshRecipe(recipes) })
+
+refreshRecipe(recipes);
+
+function refreshRecipe(recipes) {
+    let filteredRecipes = recipes;
+    if (inputSearch.value.length > 2 || ingredientArrayTagList.length > 0 || applianceArrayTagList.length > 0 || ustensilsArrayTagList.length > 0) {
+        filteredRecipes = filterRecipes(recipes)
+    }
     displayRecipes(filteredRecipes)
 
-    if(filteredRecipes.length === 0){    //for display the text "any recipes available"
-        anyRecipes()
-        }
+    if (filteredRecipes.length === 0) {    //for display the text "any recipes available"
+        displayMessageError()
+    } else {
+        hideMessageError()
+    }
 
-    const filterAll = document.querySelector('.filterAll');
-    if (filterAll !== null && filterAll.className === 'filterAll filter1') {
-        hideListe(filterAll, query.ingredients)
+    const filterClassAll = document.querySelector('.filterClassAll');
+    if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassIngredients') {
+        hideListe(filterClassAll, query.ingredients)
     }
-    if (filterAll !== null && filterAll.className === 'filterAll filter2') {
-        hideListe(filterAll, query.appareils)
+    if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassAppliances') {
+        hideListe(filterClassAll, query.appliances)
     }
-    if (filterAll !== null && filterAll.className === 'filterAll filter3') {
-        hideListe(filterAll, query.ustensiles)
+    if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassUstensils') {
+        hideListe(filterClassAll, query.ustensils)
     }
     return filteredRecipes
 }
 
-// global search baar
-let inputSearch = document.querySelector('.input-search');
-inputSearch.addEventListener('change', (e)=> { if(e.target.value.length>2){ updateUI(recipes)}})
 
-
-//   section filter by type
-const filterIngredients = document.querySelector('.filter1');
-const filterApplications = document.querySelector('.filter2');
-const filterUstensiles = document.querySelector('.filter3');
+//   section filter by three type
+const filterIngredients = document.querySelector('.filterClassIngredients');
+const filterApplications = document.querySelector('.filterClassAppliances');
+const filterUstensils = document.querySelector('.filterClassUstensils');
 
 filterIngredients.addEventListener('click', filterClick);
 filterApplications.addEventListener('click', filterClick);
-filterUstensiles.addEventListener('click', filterClick);
+filterUstensils.addEventListener('click', filterClick);
 
 // display by theme
 function filterClick(e) {
     if (e.target.tagName == 'INPUT') {
         return
     }
-    const filtered = updateUI(recipes);
+    const filtered = refreshRecipe(recipes);
     const getRecipeIngredient = getIngredient(filtered);
     const getRecipeAppliance = getAppliance(filtered);
     const getRecipeUstensils = getUstensils(filtered);
-    if (e.target.innerText === 'Ingredients') {
+    // console.log(e);
+    if (e.target.closest('.filterClassIngredients')) {
         displayFilterClick(getRecipeIngredient, filterIngredients, query.ingredients)
-        hideListe(filterUstensiles, query.ustensiles);
-        hideListe(filterApplications, query.appareils);
+        hideListe(filterUstensils, query.ustensils);
+        hideListe(filterApplications, query.appliances);
     }
-    if (e.target.innerText === 'Appareils') {
-        displayFilterClick(getRecipeAppliance, filterApplications, query.appareils)
-        hideListe(filterUstensiles, query.ustensiles);
+    if (e.target.closest('.filterClassAppliances')) {
+        displayFilterClick(getRecipeAppliance, filterApplications, query.appliances)
+        hideListe(filterUstensils, query.ustensils);
         hideListe(filterIngredients, query.ingredients);
     }
-    if (e.target.innerText === 'Ustensiles') {
-        displayFilterClick(getRecipeUstensils, filterUstensiles, query.ustensiles)
-        hideListe(filterApplications, query.appareils);
+    if (e.target.closest('.filterClassUstensils')) {
+        displayFilterClick(getRecipeUstensils, filterUstensils, query.ustensils)
+        hideListe(filterApplications, query.appliances);
         hideListe(filterIngredients, query.ingredients);
     }
 }
@@ -129,19 +136,19 @@ function filterClick(e) {
 function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
     const code = ` 
     <div class="bloc-allType">
-      <input type="search" class="input-allType" placeholder="Rechercher un ${labelPlaceHolder}">
-      <i class="fa-solid fa-angle-up angleUp"></i>
+        <input type="search" class="input-allType" placeholder="Rechercher un ${labelPlaceHolder}">
+        <i class="fa-solid fa-angle-up angleUp"></i>
     </div>
     <ul class="card-allType"></ul>
     `
     DOMFilterClick.innerHTML = code;
-    DOMFilterClick.classList.replace('filter', 'filterAll');
+    DOMFilterClick.classList.replace('filter', 'filterClassAll');
     const searchType = DOMFilterClick.querySelector('.input-allType');
     searchType.addEventListener('change', () => {
         const allBlocUl = DOMFilterClick.querySelector('ul');
         allBlocUl.innerHTML = ''
         let filteredByType = listeByType.filter(label => {
-            if (label.includes(searchType.value)) {
+            if (label.toLowerCase().includes(searchType.value.toLowerCase())) {
                 return true
             }
         })
@@ -171,28 +178,28 @@ function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
 function sectionTag(labelLi, classTag, blocName) {
     const tagIngredientsBloc = document.querySelector('.IngredientsDiv');
     const textTagIngredientsBloc = tagIngredientsBloc.innerText;
-    const tagAppareilsBloc = document.querySelector('.AppareilsDiv');
-    const textTagAppareilsBloc = tagAppareilsBloc.innerText;
-    const tagUstensilesBloc = document.querySelector('.UstensilesDiv');
-    const textTagUstensilesBloc = tagUstensilesBloc.innerText;
+    const tagAppliancesBloc = document.querySelector('.AppliancesDiv');
+    const textTagAppliancesBloc = tagAppliancesBloc.innerText;
+    const tagUstensilsBloc = document.querySelector('.UstensilsDiv');
+    const textTagUstensilsBloc = tagUstensilsBloc.innerText;
 
     const code = `
     <div class="${classTag} tagDiv">
-    <p>${labelLi}</p>
-    <i class="fa-regular fa-circle-xmark closeTag"></i>
+        <p>${labelLi}</p>
+        <i class="fa-regular fa-circle-xmark closeTag"></i>
     </div>
     `
-    if (textTagIngredientsBloc.includes(labelLi) == false && blocName.className == 'filterAll filter1') {
+    if (textTagIngredientsBloc.includes(labelLi) == false && blocName.className == 'filterClassAll filterClassIngredients') {
         ingredientTagList.add(labelLi);
         tagIngredientsBloc.innerHTML += code;
     }
-    if (textTagAppareilsBloc.includes(labelLi) == false && blocName.className == 'filterAll filter2') {
+    if (textTagAppliancesBloc.includes(labelLi) == false && blocName.className == 'filterClassAll filterClassAppliances') {
         applianceTagList.add(labelLi)
-        tagAppareilsBloc.innerHTML += code;
+        tagAppliancesBloc.innerHTML += code;
     }
-    if (textTagUstensilesBloc.includes(labelLi) == false && blocName.className == 'filterAll filter3') {
-        ustensilesTagList.add(labelLi)
-        tagUstensilesBloc.innerHTML += code;
+    if (textTagUstensilsBloc.includes(labelLi) == false && blocName.className == 'filterClassAll filterClassUstensils') {
+        ustensilsTagList.add(labelLi)
+        tagUstensilsBloc.innerHTML += code;
     }
 
     const closeTag = document.querySelectorAll('.closeTag');
@@ -204,30 +211,30 @@ function sectionTag(labelLi, classTag, blocName) {
             if (ingredientTagList.has(textTag)) {
                 ingredientTagList.delete(textTag);
                 ingredientArrayTagList = Array.from(ingredientTagList);
-                updateUI(recipes);
+                refreshRecipe(recipes);
             }
             if (applianceTagList.has(textTag)) {
                 applianceTagList.delete(textTag);
                 applianceArrayTagList = Array.from(applianceTagList);
-                updateUI(recipes);
+                refreshRecipe(recipes);
             }
-            if (ustensilesTagList.has(textTag)) {
-                ustensilesTagList.delete(textTag);
-                ustensilesArrayTagList = Array.from(ustensilesTagList);
-                updateUI(recipes);
+            if (ustensilsTagList.has(textTag)) {
+                ustensilsTagList.delete(textTag);
+                ustensilsArrayTagList = Array.from(ustensilsTagList);
+                refreshRecipe(recipes);
             }
         });
     }
     ingredientArrayTagList = Array.from(ingredientTagList);
     applianceArrayTagList = Array.from(applianceTagList);
-    ustensilesArrayTagList = Array.from(ustensilesTagList);
+    ustensilsArrayTagList = Array.from(ustensilsTagList);
 
 }
 
 // global filtered function 
-function filterSearch(recipess) {
+function filterRecipes(recipes) {
     let text = document.querySelector('.input-search').value;
-    let filteredData = recipess.filter((recipe) => {
+    let filteredData = recipes.filter((recipe) => {
         const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
             return recipe.ingredients.some((ingredient) => {
                 if (ingredient.ingredient === selectedIngredient) {
@@ -244,9 +251,9 @@ function filterSearch(recipess) {
                 return false
             }
         })
-        const hasSelectedUstensiles = ustensilesArrayTagList.every(selectedUstensiles => {
+        const hasSelectedUstensils = ustensilsArrayTagList.every(selectedUstensils => {
             return recipe.ustensils.some((ustensil) => {
-                if (ustensil === selectedUstensiles) {
+                if (ustensil === selectedUstensils) {
                     return true
                 } else {
                     return false
@@ -254,13 +261,13 @@ function filterSearch(recipess) {
             })
         })
 
-        if ((recipe.name.includes(text) || recipe.description.includes(text) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-            if (ingredient.includes(text)) {
+        if ((recipe.name.toLowerCase().includes(text.toLowerCase()) || recipe.description.toLowerCase().includes(text.toLowerCase()) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
+            if (ingredient.toLowerCase().includes(text.toLowerCase())) {
                 return true
             }
         })
         )
-            && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensiles
+            && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
         ) {
             return true
         }
@@ -269,10 +276,9 @@ function filterSearch(recipess) {
     return filteredData
 }
 
-
 // hide three bloc
 function hideListe(element, query) {
-    element.classList.replace('filterAll', 'filter');
+    element.classList.replace('filterClassAll', 'filter');
     const code = `
     <p>${query}</p>
     <i class="fa-solid fa-angle-down angleDown"></i>
@@ -294,9 +300,9 @@ function getIngredient(recipes) {
 }
 
 // appliance
-function getAppliance(recipess) {
+function getAppliance(recipes) {
     let arrayApplianceBeforeSet = []
-    recipess.forEach(recipe => {
+    recipes.forEach(recipe => {
         arrayApplianceBeforeSet.push(recipe.appliance)
     })
     let objectNameAppliance = new Set(arrayApplianceBeforeSet);
@@ -304,10 +310,10 @@ function getAppliance(recipess) {
     return arrayApplianceAfterSet
 }
 
-// ustensiles 
-function getUstensils(recipess) {
+// ustensils 
+function getUstensils(recipes) {
     let arrayUstensilsBeforeSet = []
-    recipess.forEach(recipe => {
+    recipes.forEach(recipe => {
         recipe.ustensils.forEach(ustensil => {
             arrayUstensilsBeforeSet.push(ustensil)
         })
@@ -318,11 +324,15 @@ function getUstensils(recipess) {
 }
 
 // function 
-function anyRecipes() {
+function displayMessageError() {
     const code = `
     <p class="anyrecipes">Aucune recette ne correspond à votre critère...</p>
     `
-    const divAnyRecipes = document.querySelector('.divAnyRecipes');
-    divAnyRecipes.innerHTML=code; 
+    const divMessageError = document.querySelector('.divMessageError');
+    divMessageError.innerHTML = code;
 }
 
+function hideMessageError() {
+    const divMessageError = document.querySelector('.divMessageError');
+    divMessageError.innerHTML = ''
+}

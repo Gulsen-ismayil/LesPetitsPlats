@@ -56,7 +56,7 @@ input {
 .anyrecipes {
     margin-top: 5px;
     font-size: 14px;
-    color:grey;
+    color: grey;
 }
 
 /* filter */
@@ -77,10 +77,12 @@ input {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    cursor: pointer;
 }
 
 .angleDown {
     padding-left: 20px;
+    cursor: pointer;
 }
 
 .bloc-allType {
@@ -96,7 +98,7 @@ input {
     border: none;
 }
 
-.filterAll {
+.filterClassAll {
     margin-right: 20px;
     border-radius: 4px;
     color: white;
@@ -107,6 +109,7 @@ input {
 .allTypeLi {
     list-style: none;
     margin-right: 60px;
+    cursor: pointer;
 }
 
 .card-allType {
@@ -121,15 +124,18 @@ input {
 }
 
 /* filter individual and tag */
-.filter1, .Ingredients{
+.filterClassIngredients,
+.Ingredients {
     background-color: rgba(0, 123, 255, 0.737);
 }
 
-.filter2, .Appareils{
+.filterClassAppliances,
+.Appareils {
     background-color: rgb(156, 221, 180);
 }
 
-.filter3, .Ustensiles{
+.filterClassUstensils,
+.Ustensiles {
     background-color: rgb(237, 114, 114);
 }
 
@@ -139,10 +145,11 @@ input {
     display: flex;
     flex-wrap: wrap;
     row-gap: 5px;
-    /* flex-direction: column; */
 }
 
-.IngredientsDiv, .AppareilsDiv, .UstensilesDiv {
+.IngredientsDiv,
+.AppliancesDiv,
+.UstensilsDiv {
     display: flex;
     flex-wrap: wrap;
     row-gap: 5px;
@@ -162,7 +169,9 @@ input {
 
 .closeTag {
     padding-left: 5px;
+    cursor: pointer;
 }
+
 /* recipes */
 #section-recipe {
     display: flex;
@@ -224,7 +233,7 @@ input {
     overflow: hidden; */
 }
 
-.description{
+.description {
     width: 45%;
     font-size: 12px;
     display: -webkit-box;
