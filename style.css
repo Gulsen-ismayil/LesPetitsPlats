@@ -242,3 +242,19 @@ input {
     overflow: hidden;
     /* text-overflow: ellipsis; */
 }
+
+@media screen and (max-width:760px) {
+    #section-filter{
+        flex-direction: column;
+        row-gap: 10px;
+    }
+
+    .filterClassIngredients, .filterClassAppliances, .filterClassUstensils {
+        width: 60%;
+        margin: auto;
+    }
+
+    .filterClassAll {
+        width: 70%;
+    }
+}
