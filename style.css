@@ -85,7 +85,7 @@ input {
     cursor: pointer;
 }
 
-.bloc-allType {
+.divInputThreeBloc {
     margin-left: 3%;
     padding: 1%;
     display: flex;
@@ -93,7 +93,7 @@ input {
     align-items: center;
 }
 
-.input-allType {
+.classInputThreeBloc {
     background-color: transparent;
     border: none;
 }
@@ -112,7 +112,7 @@ input {
     cursor: pointer;
 }
 
-.card-allType {
+.listLiThreeBloc {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;

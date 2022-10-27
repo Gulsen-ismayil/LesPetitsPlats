@@ -1,38 +1,37 @@
-const sectionRecipes = document.getElementById('section-recipe');
-const { recipes } = await getDataRecipes();
-
+const sectionRecipes = document.getElementById('section-recipe')
+const { recipes } = await getDataRecipes()
 
 const query = {
-    appliances: 'Appareils',
-    ustensils: 'Ustensiles',
-    ingredients: 'Ingredients'
+  appliances: 'Appareils',
+  ustensils: 'Ustensiles',
+  ingredients: 'Ingredients'
 }
 
-let ingredientTagList = new Set();
-let applianceTagList = new Set();
-let ustensilsTagList = new Set();
+const ingredientTagList = new Set()
+const applianceTagList = new Set()
+const ustensilsTagList = new Set()
 
-var ingredientArrayTagList = [];
-var applianceArrayTagList = [];
-var ustensilsArrayTagList = [];
+let ingredientArrayTagList = []
+let applianceArrayTagList = []
+let ustensilsArrayTagList = []
 
-// retrieve data
-async function getDataRecipes() {
-    const data = await fetch('data/recipes.json');
-    const dataRecipes = await data.json()
-    return dataRecipes;
+// get database
+async function getDataRecipes () {
+  const data = await fetch('data/recipes.json')
+  const dataRecipes = await data.json()
+  return dataRecipes
 }
 
-// recipes html,displayrecipes 
-function recipesFactory(data) {
-    const { name, time, ingredients, description } = data
-    let liste = ''
-    for (let i = 0; i < ingredients.length; i++) {
-        liste = liste + `${ingredients[i].ingredient}: ${ingredients[i].quantity || ''}${ingredients[i].unit || ''} <br>`
-    }
+// section recipes DOM
+function recipesFactory (data) {
+  const { name, time, ingredients, description } = data
+  let liste = ''
+  for (let i = 0; i < ingredients.length; i++) {
+    liste = liste + `${ingredients[i].ingredient}: ${ingredients[i].quantity || ''}${ingredients[i].unit || ''} <br>`
+  }
 
-    function recipesCardDom() {
-        let code = `
+  function recipesCardDom () {
+    const code = `
         <div class="card">
             <div class="image" ></div>
             <div class="content">
@@ -50,289 +49,292 @@ function recipesFactory(data) {
             </div>
         </div>
         `
-        sectionRecipes.innerHTML += code;
-    }
-    return { recipesCardDom }
+    sectionRecipes.innerHTML += code
+  }
+  return { recipesCardDom }
 }
 
-function displayRecipes(recipes) {
-    sectionRecipes.innerHTML = ''
-    recipes.forEach(recipe => {
-        const factoryRecipes = recipesFactory(recipe)
-        factoryRecipes.recipesCardDom();
-    });
+// make new recipes list
+function displayRecipes (recipes) {
+  sectionRecipes.innerHTML = ''
+  recipes.forEach(recipe => {
+    const factoryRecipes = recipesFactory(recipe)
+    factoryRecipes.recipesCardDom()
+  })
 }
 
-// global search baar
-let inputSearch = document.querySelector('.input-search');
-inputSearch.addEventListener('change', () => { refreshRecipe(recipes) })
+// global search with input
+const globalSearch = document.querySelector('.globalSearch')
+globalSearch.addEventListener('change', () => { refreshRecipe(recipes) })
 
-refreshRecipe(recipes);
+refreshRecipe(recipes)
 
-function refreshRecipe(recipes) {
-    let filteredRecipes = recipes;
-    if (inputSearch.value.length > 2 || ingredientArrayTagList.length > 0 || applianceArrayTagList.length > 0 || ustensilsArrayTagList.length > 0) {
-        filteredRecipes = filterRecipes(recipes)
-    }
-    displayRecipes(filteredRecipes)
+// refresh all the page
+function refreshRecipe (recipes) {
+  let filteredRecipes = recipes
+  if (globalSearch.value.length > 2 || ingredientArrayTagList.length > 0 || applianceArrayTagList.length > 0 || ustensilsArrayTagList.length > 0) {
+    filteredRecipes = filterRecipes(recipes)
+  }
+  displayRecipes(filteredRecipes)
 
-    if (filteredRecipes.length === 0) {    //for display the text "any recipes available"
-        displayMessageError()
-    } else {
-        hideMessageError()
-    }
+  if (filteredRecipes.length === 0) { // for display the text "any recipes available"
+    displayMessageError()
+  } else {
+    hideMessageError()
+  }
 
-    const filterClassAll = document.querySelector('.filterClassAll');
-    if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassIngredients') {
-        hideListe(filterClassAll, query.ingredients)
-    }
-    if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassAppliances') {
-        hideListe(filterClassAll, query.appliances)
-    }
-    if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassUstensils') {
-        hideListe(filterClassAll, query.ustensils)
-    }
-    return filteredRecipes
+  const filterClassAll = document.querySelector('.filterClassAll')
+  if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassIngredients') {
+    hideListe(filterClassAll, query.ingredients)
+  }
+  if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassAppliances') {
+    hideListe(filterClassAll, query.appliances)
+  }
+  if (filterClassAll !== null && filterClassAll.className === 'filterClassAll filterClassUstensils') {
+    hideListe(filterClassAll, query.ustensils)
+  }
+  return filteredRecipes
 }
 
+//   section: filter by three types
+const filterIngredients = document.querySelector('.filterClassIngredients')
+const filterApplications = document.querySelector('.filterClassAppliances')
+const filterUstensils = document.querySelector('.filterClassUstensils')
 
-//   section filter by three type
-const filterIngredients = document.querySelector('.filterClassIngredients');
-const filterApplications = document.querySelector('.filterClassAppliances');
-const filterUstensils = document.querySelector('.filterClassUstensils');
+filterIngredients.addEventListener('click', filterThreeBloc)
+filterApplications.addEventListener('click', filterThreeBloc)
+filterUstensils.addEventListener('click', filterThreeBloc)
 
-filterIngredients.addEventListener('click', filterClick);
-filterApplications.addEventListener('click', filterClick);
-filterUstensils.addEventListener('click', filterClick);
+// display three blocs of elements
+function filterThreeBloc (e) {
+  if (e.target.tagName === 'INPUT') {
+    return
+  }
+  const filtered = refreshRecipe(recipes)
+  const getIngredientsList = getIngredient(filtered)
+  const getApplianceList = getAppliance(filtered)
+  const getUstensilsList = getUstensils(filtered)
 
-// display by theme
-function filterClick(e) {
-    if (e.target.tagName == 'INPUT') {
-        return
-    }
-    const filtered = refreshRecipe(recipes);
-    const getRecipeIngredient = getIngredient(filtered);
-    const getRecipeAppliance = getAppliance(filtered);
-    const getRecipeUstensils = getUstensils(filtered);
-    // console.log(e);
-    if (e.target.closest('.filterClassIngredients')) {
-        displayFilterClick(getRecipeIngredient, filterIngredients, query.ingredients)
-        hideListe(filterUstensils, query.ustensils);
-        hideListe(filterApplications, query.appliances);
-    }
-    if (e.target.closest('.filterClassAppliances')) {
-        displayFilterClick(getRecipeAppliance, filterApplications, query.appliances)
-        hideListe(filterUstensils, query.ustensils);
-        hideListe(filterIngredients, query.ingredients);
-    }
-    if (e.target.closest('.filterClassUstensils')) {
-        displayFilterClick(getRecipeUstensils, filterUstensils, query.ustensils)
-        hideListe(filterApplications, query.appliances);
-        hideListe(filterIngredients, query.ingredients);
-    }
+  if (e.target.closest('.filterClassIngredients')) {
+    displayfilterThreeBloc(getIngredientsList, filterIngredients, query.ingredients)
+    hideListe(filterUstensils, query.ustensils)
+    hideListe(filterApplications, query.appliances)
+  }
+  if (e.target.closest('.filterClassAppliances')) {
+    displayfilterThreeBloc(getApplianceList, filterApplications, query.appliances)
+    hideListe(filterUstensils, query.ustensils)
+    hideListe(filterIngredients, query.ingredients)
+  }
+  if (e.target.closest('.filterClassUstensils')) {
+    displayfilterThreeBloc(getUstensilsList, filterUstensils, query.ustensils)
+    hideListe(filterApplications, query.appliances)
+    hideListe(filterIngredients, query.ingredients)
+  }
 }
 
-// DOM for three differente type
-function displayFilterClick(listeByType, DOMFilterClick, labelPlaceHolder) {
-    const code = ` 
-    <div class="bloc-allType">
-        <input type="search" class="input-allType" placeholder="Rechercher un ${labelPlaceHolder}">
+// DOM for three elements DOM
+function displayfilterThreeBloc (listeElement, blocElement, nameElement) {
+  const code = ` 
+    <div class="divInputThreeBloc">
+        <input type="search" class="classInputThreeBloc" placeholder="Rechercher un ${nameElement}">
         <i class="fa-solid fa-angle-up angleUp"></i>
     </div>
-    <ul class="card-allType"></ul>
-    `
-    DOMFilterClick.innerHTML = code;
-    DOMFilterClick.classList.replace('filter', 'filterClassAll');
-    const searchType = DOMFilterClick.querySelector('.input-allType');
-    searchType.addEventListener('change', () => {
-        const allBlocUl = DOMFilterClick.querySelector('ul');
-        allBlocUl.innerHTML = ''
-        let filteredByType = listeByType.filter(label => {
-            if (label.toLowerCase().includes(searchType.value.toLowerCase())) {
-                return true
-            }
-        })
-
-        filteredByType.forEach(label => {
-            const allBlocLi = document.createElement('li');
-            allBlocLi.classList.add('allTypeLi');
-            allBlocLi.innerText = label;
-            allBlocUl.appendChild(allBlocLi);
-        })
+    <ul class="listLiThreeBloc"></ul>
+  `
+  blocElement.innerHTML = code
+  blocElement.classList.replace('filter', 'filterClassAll')
+  const inputSearchElement = blocElement.querySelector('.classInputThreeBloc')
+  inputSearchElement.addEventListener('change', () => {
+    const allBlocUl = blocElement.querySelector('ul')
+    allBlocUl.innerHTML = ''
+    const filteredByElement = listeElement.filter(label => {
+      if (label.toLowerCase().includes(inputSearchElement.value.toLowerCase())) {
+        return true
+      }
+      return false
     })
 
-    listeByType.forEach(label => {
-        const allBlocUl = DOMFilterClick.querySelector('ul');
-        const allBlocLi = document.createElement('li');
-        allBlocLi.classList.add('allTypeLi');
-        allBlocLi.innerText = label;
-        allBlocUl.appendChild(allBlocLi);
-
-        allBlocLi.addEventListener('click', () => { sectionTag(label, labelPlaceHolder, DOMFilterClick) })
+    filteredByElement.forEach(label => {
+      const allBlocLi = document.createElement('li')
+      allBlocLi.classList.add('allTypeLi')
+      allBlocLi.innerText = label
+      allBlocUl.appendChild(allBlocLi)
     })
+  })
+
+  listeElement.forEach(label => {
+    const allBlocUl = blocElement.querySelector('ul')
+    const allBlocLi = document.createElement('li')
+    allBlocLi.classList.add('allTypeLi')
+    allBlocLi.innerText = label
+    allBlocUl.appendChild(allBlocLi)
+
+    allBlocLi.addEventListener('click', () => { sectionTag(label, nameElement, blocElement) })
+  })
 }
 
+// create tags, insert tags by element and close tags
 
-// section Tag
+function sectionTag (labelLi, classTag, blocName) {
+  const tagIngredientsBloc = document.querySelector('.IngredientsDiv')
+  const textTagIngredientsBloc = tagIngredientsBloc.innerText
+  const tagAppliancesBloc = document.querySelector('.AppliancesDiv')
+  const textTagAppliancesBloc = tagAppliancesBloc.innerText
+  const tagUstensilsBloc = document.querySelector('.UstensilsDiv')
+  const textTagUstensilsBloc = tagUstensilsBloc.innerText
 
-function sectionTag(labelLi, classTag, blocName) {
-    const tagIngredientsBloc = document.querySelector('.IngredientsDiv');
-    const textTagIngredientsBloc = tagIngredientsBloc.innerText;
-    const tagAppliancesBloc = document.querySelector('.AppliancesDiv');
-    const textTagAppliancesBloc = tagAppliancesBloc.innerText;
-    const tagUstensilsBloc = document.querySelector('.UstensilsDiv');
-    const textTagUstensilsBloc = tagUstensilsBloc.innerText;
-
-    const code = `
+  const code = `
     <div class="${classTag} tagDiv">
         <p>${labelLi}</p>
         <i class="fa-regular fa-circle-xmark closeTag"></i>
     </div>
     `
-    if (textTagIngredientsBloc.includes(labelLi) == false && blocName.className == 'filterClassAll filterClassIngredients') {
-        ingredientTagList.add(labelLi);
-        tagIngredientsBloc.innerHTML += code;
-    }
-    if (textTagAppliancesBloc.includes(labelLi) == false && blocName.className == 'filterClassAll filterClassAppliances') {
-        applianceTagList.add(labelLi)
-        tagAppliancesBloc.innerHTML += code;
-    }
-    if (textTagUstensilsBloc.includes(labelLi) == false && blocName.className == 'filterClassAll filterClassUstensils') {
-        ustensilsTagList.add(labelLi)
-        tagUstensilsBloc.innerHTML += code;
-    }
+  if (textTagIngredientsBloc.includes(labelLi) === false && blocName.className === 'filterClassAll filterClassIngredients') {
+    ingredientTagList.add(labelLi)
+    tagIngredientsBloc.innerHTML += code
+  }
+  if (textTagAppliancesBloc.includes(labelLi) === false && blocName.className === 'filterClassAll filterClassAppliances') {
+    applianceTagList.add(labelLi)
+    tagAppliancesBloc.innerHTML += code
+  }
+  if (textTagUstensilsBloc.includes(labelLi) === false && blocName.className === 'filterClassAll filterClassUstensils') {
+    ustensilsTagList.add(labelLi)
+    tagUstensilsBloc.innerHTML += code
+  }
 
-    const closeTag = document.querySelectorAll('.closeTag');
-    for (let i = 0; i < closeTag.length; i++) {
-        let textTag
-        closeTag[i].addEventListener('click', (e) => {
-            textTag = e.target.closest('.tagDiv').innerText;
-            e.target.closest('.tagDiv').style.display = 'none';
-            if (ingredientTagList.has(textTag)) {
-                ingredientTagList.delete(textTag);
-                ingredientArrayTagList = Array.from(ingredientTagList);
-                refreshRecipe(recipes);
-            }
-            if (applianceTagList.has(textTag)) {
-                applianceTagList.delete(textTag);
-                applianceArrayTagList = Array.from(applianceTagList);
-                refreshRecipe(recipes);
-            }
-            if (ustensilsTagList.has(textTag)) {
-                ustensilsTagList.delete(textTag);
-                ustensilsArrayTagList = Array.from(ustensilsTagList);
-                refreshRecipe(recipes);
-            }
-        });
-    }
-    ingredientArrayTagList = Array.from(ingredientTagList);
-    applianceArrayTagList = Array.from(applianceTagList);
-    ustensilsArrayTagList = Array.from(ustensilsTagList);
-
+  const closeTag = document.querySelectorAll('.closeTag')
+  for (let i = 0; i < closeTag.length; i++) {
+    let textTag
+    closeTag[i].addEventListener('click', (e) => {
+      textTag = e.target.closest('.tagDiv').innerText
+      e.target.closest('.tagDiv').style.display = 'none'
+      if (ingredientTagList.has(textTag)) {
+        ingredientTagList.delete(textTag)
+        ingredientArrayTagList = Array.from(ingredientTagList)
+        refreshRecipe(recipes)
+      }
+      if (applianceTagList.has(textTag)) {
+        applianceTagList.delete(textTag)
+        applianceArrayTagList = Array.from(applianceTagList)
+        refreshRecipe(recipes)
+      }
+      if (ustensilsTagList.has(textTag)) {
+        ustensilsTagList.delete(textTag)
+        ustensilsArrayTagList = Array.from(ustensilsTagList)
+        refreshRecipe(recipes)
+      }
+    })
+  }
+  ingredientArrayTagList = Array.from(ingredientTagList)
+  applianceArrayTagList = Array.from(applianceTagList)
+  ustensilsArrayTagList = Array.from(ustensilsTagList)
 }
 
-// global filtered function 
-function filterRecipes(recipes) {
-    let text = document.querySelector('.input-search').value;
-    let filteredData = recipes.filter((recipe) => {
-        const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
-            return recipe.ingredients.some((ingredient) => {
-                if (ingredient.ingredient === selectedIngredient) {
-                    return true
-                } else {
-                    return false
-                }
-            })
-        })
-        const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
-            if (recipe.appliance === selectedAppliance) {
-                return true
-            } else {
-                return false
-            }
-        })
-        const hasSelectedUstensils = ustensilsArrayTagList.every(selectedUstensils => {
-            return recipe.ustensils.some((ustensil) => {
-                if (ustensil === selectedUstensils) {
-                    return true
-                } else {
-                    return false
-                }
-            })
-        })
-
-        if ((recipe.name.toLowerCase().includes(text.toLowerCase()) || recipe.description.toLowerCase().includes(text.toLowerCase()) || recipe.ingredients.some(({ ingredient }) => {  // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-            if (ingredient.toLowerCase().includes(text.toLowerCase())) {
-                return true
-            }
-        })
-        )
-            && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
-        ) {
-            return true
+// global filtered function
+function filterRecipes (recipes) {
+  const text = document.querySelector('.globalSearch').value
+  const filteredData = recipes.filter((recipe) => {
+    const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
+      return recipe.ingredients.some((ingredient) => {
+        if (ingredient.ingredient === selectedIngredient) {
+          return true
+        } else {
+          return false
         }
+      })
+    })
+    const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
+      if (recipe.appliance === selectedAppliance) {
+        return true
+      } else {
+        return false
+      }
+    })
+    const hasSelectedUstensils = ustensilsArrayTagList.every(selectedUstensils => {
+      return recipe.ustensils.some((ustensil) => {
+        if (ustensil === selectedUstensils) {
+          return true
+        } else {
+          return false
+        }
+      })
     })
 
-    return filteredData
+    if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
+    recipe.description.toLowerCase().includes(text.toLowerCase()) ||
+    recipe.ingredients.some(({ ingredient }) => { // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
+      if (ingredient.toLowerCase().includes(text.toLowerCase())) {
+        return true
+      }
+      return false
+    })
+    ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
+    ) {
+      return true
+    }
+    return false
+  })
+
+  return filteredData
 }
 
-// hide three bloc
-function hideListe(element, query) {
-    element.classList.replace('filterClassAll', 'filter');
-    const code = `
+// hide three blocs element
+function hideListe (element, query) {
+  element.classList.replace('filterClassAll', 'filter')
+  const code = `
     <p>${query}</p>
     <i class="fa-solid fa-angle-down angleDown"></i>
     `
-    element.innerHTML = code
+  element.innerHTML = code
 }
 
-// ingredient 
-function getIngredient(recipes) {
-    let arrayIngredientBeforeSet = []
-    recipes.forEach(recipe => {
-        recipe.ingredients.forEach(ingredientElement => {
-            arrayIngredientBeforeSet.push(ingredientElement.ingredient)
-        })
+// get ingredient list
+function getIngredient (recipes) {
+  const arrayIngredientBeforeSet = []
+  recipes.forEach(recipe => {
+    recipe.ingredients.forEach(ingredientElement => {
+      arrayIngredientBeforeSet.push(ingredientElement.ingredient)
     })
-    let objectNameIngredient = new Set(arrayIngredientBeforeSet);//creer nouveau tableau without doublont
-    const arrayIngredientAfterSet = Array.from(objectNameIngredient)
-    return arrayIngredientAfterSet
+  })
+  const objectNameIngredient = new Set(arrayIngredientBeforeSet) // creer nouveau tableau without doublont
+  const arrayIngredientAfterSet = Array.from(objectNameIngredient)
+  return arrayIngredientAfterSet
 }
 
-// appliance
-function getAppliance(recipes) {
-    let arrayApplianceBeforeSet = []
-    recipes.forEach(recipe => {
-        arrayApplianceBeforeSet.push(recipe.appliance)
+// get appliance list
+function getAppliance (recipes) {
+  const arrayApplianceBeforeSet = []
+  recipes.forEach(recipe => {
+    arrayApplianceBeforeSet.push(recipe.appliance)
+  })
+  const objectNameAppliance = new Set(arrayApplianceBeforeSet)
+  const arrayApplianceAfterSet = Array.from(objectNameAppliance)
+  return arrayApplianceAfterSet
+}
+
+// get ustensils list
+function getUstensils (recipes) {
+  const arrayUstensilsBeforeSet = []
+  recipes.forEach(recipe => {
+    recipe.ustensils.forEach(ustensil => {
+      arrayUstensilsBeforeSet.push(ustensil)
     })
-    let objectNameAppliance = new Set(arrayApplianceBeforeSet);
-    const arrayApplianceAfterSet = Array.from(objectNameAppliance)
-    return arrayApplianceAfterSet
+  })
+  const objectNameUstensils = new Set(arrayUstensilsBeforeSet)
+  const arrayUstensilsAfterSet = Array.from(objectNameUstensils)
+  return arrayUstensilsAfterSet
 }
 
-// ustensils 
-function getUstensils(recipes) {
-    let arrayUstensilsBeforeSet = []
-    recipes.forEach(recipe => {
-        recipe.ustensils.forEach(ustensil => {
-            arrayUstensilsBeforeSet.push(ustensil)
-        })
-    })
-    let objectNameUstensils = new Set(arrayUstensilsBeforeSet)
-    const arrayUstensilsAfterSet = Array.from(objectNameUstensils)
-    return arrayUstensilsAfterSet
-}
-
-// function 
-function displayMessageError() {
-    const code = `
+// function : display message when we get any recipes
+function displayMessageError () {
+  const code = `
     <p class="anyrecipes">Aucune recette ne correspond à votre critère...</p>
     `
-    const divMessageError = document.querySelector('.divMessageError');
-    divMessageError.innerHTML = code;
+  const divMessageError = document.querySelector('.divMessageError')
+  divMessageError.innerHTML = code
 }
 
-function hideMessageError() {
-    const divMessageError = document.querySelector('.divMessageError');
-    divMessageError.innerHTML = ''
+function hideMessageError () {
+  const divMessageError = document.querySelector('.divMessageError')
+  divMessageError.innerHTML = ''
 }
