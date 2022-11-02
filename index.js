@@ -233,51 +233,88 @@ function sectionTag (labelLi, classTag, blocName) {
 // global filtered function
 function filterRecipes (recipes) {
   const text = document.querySelector('.globalSearch').value
-  const filteredData = recipes.filter((recipe) => {
-    const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
-      return recipe.ingredients.some((ingredient) => {
-        if (ingredient.ingredient === selectedIngredient) {
-          return true
-        } else {
-          return false
-        }
-      })
-    })
-    const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
-      if (recipe.appliance === selectedAppliance) {
-        return true
-      } else {
-        return false
-      }
-    })
-    const hasSelectedUstensils = ustensilsArrayTagList.every(selectedUstensils => {
-      return recipe.ustensils.some((ustensil) => {
-        if (ustensil === selectedUstensils) {
-          return true
-        } else {
-          return false
-        }
-      })
-    })
+  const filteredData = []
+  for (let i = 0; i < recipes.length; i++) {
+    const recipe = recipes[i]
 
+    let hasSelectedIngredient = false
+    for (let j = 0; j < ingredientArrayTagList.length; j++) {
+      const selectedIngredient = ingredientArrayTagList[j]
+      if (recipe.ingredients.some(({ ingredient }) => ingredient === selectedIngredient)) {
+        hasSelectedIngredient = true
+      }
+      console.log(hasSelectedIngredient)
+    }
+
+    let hasSelectedAppliance = false
+    for (let k = 0; k < applianceArrayTagList.length; k++) {
+      const selectedAppliance = applianceArrayTagList[k]
+      if (recipe.appliance === selectedAppliance) {
+        hasSelectedAppliance = true
+      }
+    }
+
+    let hasSelectedUstensils = false
+    for (let h = 0; h < ustensilsArrayTagList.length; h++) {
+      const selectedUstensils = ustensilsArrayTagList[h]
+      if (recipe.ustensils.some(ustensil => ustensil === selectedUstensils)) {
+        hasSelectedUstensils = true
+      }
+    }
     if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
     recipe.description.toLowerCase().includes(text.toLowerCase()) ||
-    recipe.ingredients.some(({ ingredient }) => { // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-      if (ingredient.toLowerCase().includes(text.toLowerCase())) {
-        return true
-      }
-      return false
-    })
-    ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
+    recipe.ingredients.some(({ ingredient }) =>
+      ingredient.toLowerCase().includes(text.toLowerCase())
+    )) || (hasSelectedIngredient || hasSelectedAppliance || hasSelectedUstensils)
     ) {
-      return true
+      filteredData.push(recipe)
     }
-    return false
-  })
+    console.log(hasSelectedIngredient)
+  }
+  // const filteredData = recipes.filter((recipe) => {
+  //   const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
+  //     return recipe.ingredients.some((ingredient) => {
+  //       if (ingredient.ingredient === selectedIngredient) {
+  //         return true
+  //       } else {
+  //         return false
+  //       }
+  //     })
+  //   })
+  //   const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
+  //     if (recipe.appliance === selectedAppliance) {
+  //       return true
+  //     } else {
+  //       return false
+  //     }
+  //   })
+  //   const hasSelectedUstensils = ustensilsArrayTagList.every(selectedUstensils => {
+  //     return recipe.ustensils.some((ustensil) => {
+  //       if (ustensil === selectedUstensils) {
+  //         return true
+  //       } else {
+  //         return false
+  //       }
+  //     })
+  //   })
 
+  //   if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
+  //   recipe.description.toLowerCase().includes(text.toLowerCase()) ||
+  //   recipe.ingredients.some(({ ingredient }) => { // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
+  //     if (ingredient.toLowerCase().includes(text.toLowerCase())) {
+  //       return true
+  //     }
+  //     return false
+  //   })
+  //   ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
+  //   ) {
+  //     return true
+  //   }
+  //   return false
+  // })
+  console.log(filteredData)
   return filteredData
 }
-
 // hide three blocs element
 function hideListe (element, query) {
   element.classList.replace('filterClassAll', 'filter')
