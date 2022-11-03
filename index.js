@@ -234,6 +234,7 @@ function sectionTag (labelLi, classTag, blocName) {
 function filterRecipes (recipes) {
   const text = document.querySelector('.globalSearch').value
   const filteredData = []
+  console.log(text)
   for (let i = 0; i < recipes.length; i++) {
     const recipe = recipes[i]
 
@@ -243,7 +244,6 @@ function filterRecipes (recipes) {
       if (recipe.ingredients.some(({ ingredient }) => ingredient === selectedIngredient)) {
         hasSelectedIngredient = true
       }
-      console.log(hasSelectedIngredient)
     }
 
     let hasSelectedAppliance = false
@@ -263,13 +263,12 @@ function filterRecipes (recipes) {
     }
     if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
     recipe.description.toLowerCase().includes(text.toLowerCase()) ||
-    recipe.ingredients.some(({ ingredient }) =>
-      ingredient.toLowerCase().includes(text.toLowerCase())
-    )) || (hasSelectedIngredient || hasSelectedAppliance || hasSelectedUstensils)
+    recipe.ingredients.includes(text.toLowerCase())) ||
+    hasSelectedIngredient || hasSelectedAppliance || hasSelectedUstensils
     ) {
       filteredData.push(recipe)
     }
-    console.log(hasSelectedIngredient)
+    console.log(hasSelectedIngredient, hasSelectedAppliance, hasSelectedUstensils)
   }
   // const filteredData = recipes.filter((recipe) => {
   //   const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
