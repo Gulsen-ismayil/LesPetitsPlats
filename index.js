@@ -259,7 +259,7 @@ function filterRecipes (recipes) {
         }
       })
     })
-
+    console.log(hasSelectedIngredient)
     if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
     recipe.description.toLowerCase().includes(text.toLowerCase()) ||
     recipe.ingredients.some(({ ingredient }) => { // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
