@@ -239,6 +239,9 @@ function filterRecipes (recipes) {
     const recipe = recipes[i]
 
     let hasSelectedIngredient = false
+    if (ingredientArrayTagList.length === 0) {
+      hasSelectedIngredient = true
+    }
     for (let j = 0; j < ingredientArrayTagList.length; j++) {
       const selectedIngredient = ingredientArrayTagList[j]
       if (recipe.ingredients.some(({ ingredient }) => ingredient === selectedIngredient)) {
@@ -247,6 +250,9 @@ function filterRecipes (recipes) {
     }
 
     let hasSelectedAppliance = false
+    if (applianceArrayTagList.length === 0) {
+      hasSelectedAppliance = true
+    }
     for (let k = 0; k < applianceArrayTagList.length; k++) {
       const selectedAppliance = applianceArrayTagList[k]
       if (recipe.appliance === selectedAppliance) {
@@ -255,6 +261,9 @@ function filterRecipes (recipes) {
     }
 
     let hasSelectedUstensils = false
+    if (ustensilsArrayTagList.length === 0) {
+      hasSelectedUstensils = true
+    }
     for (let h = 0; h < ustensilsArrayTagList.length; h++) {
       const selectedUstensils = ustensilsArrayTagList[h]
       if (recipe.ustensils.some(ustensil => ustensil === selectedUstensils)) {
@@ -263,8 +272,8 @@ function filterRecipes (recipes) {
     }
     if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
     recipe.description.toLowerCase().includes(text.toLowerCase()) ||
-    recipe.ingredients.includes(text.toLowerCase())) ||
-    hasSelectedIngredient || hasSelectedAppliance || hasSelectedUstensils
+    recipe.ingredients.includes(text.toLowerCase())) &&
+    hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
     ) {
       filteredData.push(recipe)
     }
