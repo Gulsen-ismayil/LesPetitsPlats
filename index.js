@@ -234,7 +234,7 @@ function sectionTag (labelLi, classTag, blocName) {
 function filterRecipes (recipes) {
   const text = document.querySelector('.globalSearch').value
   const filteredData = []
-  console.log(text)
+
   for (let i = 0; i < recipes.length; i++) {
     const recipe = recipes[i]
 
@@ -270,57 +270,22 @@ function filterRecipes (recipes) {
         hasSelectedUstensils = true
       }
     }
+
+    let hasSearchIngredient = false
+    for (let f = 0; f < recipe.ingredients.length; f++) {
+      if (recipe.ingredients[f].ingredient.toLowerCase().includes(text.toLowerCase())) {
+        hasSearchIngredient = true
+      }
+    }
     if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
     recipe.description.toLowerCase().includes(text.toLowerCase()) ||
-    recipe.ingredients.includes(text.toLowerCase())) &&
+    hasSearchIngredient) &&
     hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
     ) {
       filteredData.push(recipe)
     }
-    console.log(hasSelectedIngredient, hasSelectedAppliance, hasSelectedUstensils)
   }
-  // const filteredData = recipes.filter((recipe) => {
-  //   const hasSelectedIngredient = ingredientArrayTagList.every(selectedIngredient => {
-  //     return recipe.ingredients.some((ingredient) => {
-  //       if (ingredient.ingredient === selectedIngredient) {
-  //         return true
-  //       } else {
-  //         return false
-  //       }
-  //     })
-  //   })
-  //   const hasSelectedAppliance = applianceArrayTagList.every(selectedAppliance => {
-  //     if (recipe.appliance === selectedAppliance) {
-  //       return true
-  //     } else {
-  //       return false
-  //     }
-  //   })
-  //   const hasSelectedUstensils = ustensilsArrayTagList.every(selectedUstensils => {
-  //     return recipe.ustensils.some((ustensil) => {
-  //       if (ustensil === selectedUstensils) {
-  //         return true
-  //       } else {
-  //         return false
-  //       }
-  //     })
-  //   })
 
-  //   if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
-  //   recipe.description.toLowerCase().includes(text.toLowerCase()) ||
-  //   recipe.ingredients.some(({ ingredient }) => { // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
-  //     if (ingredient.toLowerCase().includes(text.toLowerCase())) {
-  //       return true
-  //     }
-  //     return false
-  //   })
-  //   ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
-  //   ) {
-  //     return true
-  //   }
-  //   return false
-  // })
-  console.log(filteredData)
   return filteredData
 }
 // hide three blocs element
