@@ -244,6 +244,7 @@ function filterRecipes (recipes) {
     }
     for (let j = 0; j < ingredientArrayTagList.length; j++) {
       const selectedIngredient = ingredientArrayTagList[j]
+      console.log(ingredientArrayTagList)
       if (recipe.ingredients.some(({ ingredient }) => ingredient === selectedIngredient)) {
         hasSelectedIngredient = true
       }
