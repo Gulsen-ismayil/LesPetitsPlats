@@ -265,14 +265,16 @@ function filterRecipes (recipes) {
     recipe.ingredients.some(({ ingredient }) => { // un objet . si non on peut ecrire aussi : ingredient => { return ingredient.ingredient.includes()}
       if (ingredient.toLowerCase().includes(text.toLowerCase())) {
         return true
+      } else {
+        return false
       }
-      return false
     })
     ) && hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
     ) {
       return true
+    } else {
+      return false
     }
-    return false
   })
 
   return filteredData
