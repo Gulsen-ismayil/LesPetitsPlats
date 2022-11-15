@@ -238,41 +238,46 @@ function filterRecipes (recipes) {
   for (let i = 0; i < recipes.length; i++) {
     const recipe = recipes[i]
 
-    let hasSelectedIngredient = false
-    if (ingredientArrayTagList.length === 0) {
-      hasSelectedIngredient = true
-    }
-    for (let j = 0; j < ingredientArrayTagList.length; j++) {
-      const selectedIngredient = ingredientArrayTagList[j]
-      console.log(ingredientArrayTagList)
-      if (recipe.ingredients.some(({ ingredient }) => ingredient === selectedIngredient)) {
-        hasSelectedIngredient = true
-      }
-    }
+    // let hasSelectedIngredient = false
+    // if (ingredientArrayTagList.length === 0) {
+    //   hasSelectedIngredient = true
+    // }
+    // for (let j = 0; j < ingredientArrayTagList.length; j++) {
+    //   debugger
+    //   const selectedIngredient = ingredientArrayTagList[j]
+    //   if (recipe.ingredients.some(({ ingredient }) => ingredient.includes(selectedIngredient))) {
+    //     hasSelectedIngredient = true
+    //   } else {
+    //     hasSelectedIngredient = false
+    //   }
+    // }
 
-    let hasSelectedAppliance = false
-    if (applianceArrayTagList.length === 0) {
-      hasSelectedAppliance = true
-    }
-    for (let k = 0; k < applianceArrayTagList.length; k++) {
-      const selectedAppliance = applianceArrayTagList[k]
-      if (recipe.appliance === selectedAppliance) {
-        hasSelectedAppliance = true
-      }
-    }
+    // let hasSelectedAppliance = false
+    // if (applianceArrayTagList.length === 0) {
+    //   hasSelectedAppliance = true
+    // }
+    // for (let k = 0; k < applianceArrayTagList.length; k++) {
+    //   const selectedAppliance = applianceArrayTagList[k]
+    //   if (recipe.appliance.includes(selectedAppliance)) {
+    //     hasSelectedAppliance = true
+    //   }
+    // }
 
-    let hasSelectedUstensils = false
-    if (ustensilsArrayTagList.length === 0) {
-      hasSelectedUstensils = true
-    }
-    for (let h = 0; h < ustensilsArrayTagList.length; h++) {
-      const selectedUstensils = ustensilsArrayTagList[h]
-      if (recipe.ustensils.some(ustensil => ustensil === selectedUstensils)) {
-        hasSelectedUstensils = true
-      }
-    }
+    // let hasSelectedUstensils = false
+    // if (ustensilsArrayTagList.length === 0) {
+    //   hasSelectedUstensils = true
+    // }
+    // for (let h = 0; h < ustensilsArrayTagList.length; h++) {
+    //   const selectedUstensils = ustensilsArrayTagList[h]
+    //   if (recipe.ustensils.some(ustensil => ustensil.includes(selectedUstensils))) {
+    //     hasSelectedUstensils = true
+    //   }
+    // }
 
     let hasSearchIngredient = false
+    if (globalSearch.value === '') {
+      hasSearchIngredient = true
+    }
     for (let f = 0; f < recipe.ingredients.length; f++) {
       if (recipe.ingredients[f].ingredient.toLowerCase().includes(text.toLowerCase())) {
         hasSearchIngredient = true
@@ -281,12 +286,13 @@ function filterRecipes (recipes) {
     if ((recipe.name.toLowerCase().includes(text.toLowerCase()) ||
     recipe.description.toLowerCase().includes(text.toLowerCase()) ||
     hasSearchIngredient) &&
-    hasSelectedIngredient && hasSelectedAppliance && hasSelectedUstensils
+    (ingredientArrayTagList.every(list => recipe.ingredients.some(({ ingredient }) => ingredient.includes(list)))) &&
+    (applianceArrayTagList.every(list => recipe.appliance.includes(list))) &&
+    (ustensilsArrayTagList.every(list => recipe.ustensils.some(ustensil => ustensil.includes(list))))
     ) {
       filteredData.push(recipe)
     }
   }
-
   return filteredData
 }
 // hide three blocs element
