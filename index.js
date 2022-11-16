@@ -232,7 +232,6 @@ function sectionTag (labelLi, classTag, blocName) {
 
 // global filtered function
 function filterRecipes (recipes) {
-  debugger
   const text = document.querySelector('.globalSearch').value
   const filteredData = []
 
@@ -244,7 +243,7 @@ function filterRecipes (recipes) {
     //   hasSelectedIngredient = true
     // }
     // for (let j = 0; j < ingredientArrayTagList.length; j++) {
-    //   debugger
+    //   // debugger
     //   const selectedIngredient = ingredientArrayTagList[j]
     //   if (recipe.ingredients.some(({ ingredient }) => ingredient.includes(selectedIngredient))) {
     //     hasSelectedIngredient = true
