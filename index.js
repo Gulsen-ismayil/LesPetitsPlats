@@ -232,6 +232,7 @@ function sectionTag (labelLi, classTag, blocName) {
 
 // global filtered function
 function filterRecipes (recipes) {
+  debugger
   const text = document.querySelector('.globalSearch').value
   const filteredData = []
 
