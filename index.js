@@ -159,6 +159,8 @@ function displayfilterThreeBloc (listeElement, blocElement, nameElement) {
       allBlocLi.classList.add('allTypeLi')
       allBlocLi.innerText = label
       allBlocUl.appendChild(allBlocLi)
+
+      allBlocLi.addEventListener('click', () => { sectionTag(label, nameElement, blocElement) })
     })
   })
 
