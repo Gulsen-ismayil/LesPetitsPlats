@@ -65,7 +65,7 @@ function displayRecipes (recipes) {
 
 // global search with input
 const globalSearch = document.querySelector('.globalSearch')
-globalSearch.addEventListener('change', () => { refreshRecipe(recipes) })
+globalSearch.addEventListener('input', () => { refreshRecipe(recipes) })
 
 refreshRecipe(recipes)
 
