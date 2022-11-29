@@ -215,7 +215,6 @@ input {
 .time {
     width: 20%;
     font-weight: bold;
-    /* word-break: break-all; */
 }
 
 .text {
@@ -227,10 +226,6 @@ input {
 .detail {
     width: 50%;
     font-size: 12px;
-    /* display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    overflow: hidden; */
 }
 
 .description {
@@ -240,9 +235,11 @@ input {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 7;
     overflow: hidden;
-    /* text-overflow: ellipsis; */
 }
 
+.divMessageError {
+    margin-top: 10px;
+}
 @media screen and (max-width:760px) {
     #section-filter{
         flex-direction: column;
